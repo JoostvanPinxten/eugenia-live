@@ -1,5 +1,5 @@
-<% unless $.isEmptyObject(@propertyValues): %>
-  <table class="table table-bordered">
+<% if not $.isEmptyObject(@propertyValues): %>
+    <table class="table table-bordered">
     <thead>
       <tr>
         <th>Property</th>
@@ -15,4 +15,6 @@
       <% end %>
     </tbody>
   </table>
+<% else: %>
+  <p>There are no properties to display for the selected element(s). Please select a single element to show its properties.</p>
 <% end %>

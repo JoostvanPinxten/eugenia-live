@@ -10,12 +10,25 @@
   
   "packages": {
     "eugenia-live": {
-      "libs"    : ["lib/runtime.js", "lib/paper.js"],
+      "libs"    : [
+        "lib/runtime.js", 
+        "lib/paper.js", 
+
+        "lib/codemirror/lint/jsonlint.js", 
+        
+        "lib/codemirror/codemirror.js", 
+        "lib/codemirror/language/javascript/javascript.js",
+        "lib/codemirror/lint/lint.js",
+        "lib/codemirror/lint/javascript-lint.js",
+        "lib/codemirror/lint/json-lint.js"
+
+      ],
       "modules" : [
         "es5-shimify", 
         "json2ify",
         "jqueryify", 
         "spine",
+        "baconjs",        
         "spine/lib/local",
         "spine/lib/ajax",
         "spine/lib/route",
