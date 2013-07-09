@@ -20,7 +20,7 @@ class CanvasRenderer
   addAll: (type) =>
     associationMethod = type.className.toLowerCase() + 's' #e.g. Node -> nodes
     elements = @drawing[associationMethod]().all()         #e.g. @drawing.nodes().all()
-    console.log("adding all " + elements.length + " " + type.className + "s")
+    #console.log("adding all " + elements.length + " " + type.className + "s")
     @renderOne(element) for element in elements
     @updateDrawingCache()
   

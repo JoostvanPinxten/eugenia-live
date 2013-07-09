@@ -6,6 +6,7 @@ Spine.SubStack = require('lib/substack')
 CanvasRenderer = require('views/drawings/canvas_renderer')
 Toolbox = require('controllers/toolbox')
 Selection = require('controllers/selection')
+Simulation = require('controllers/simulation')
 Commander = require ('models/commands/commander')
 
 
@@ -70,6 +71,7 @@ class Show extends Spine.Controller
     if @item
       new CanvasRenderer(drawing: @item, canvas: @$('#drawing')[0])
       @toolbox = new Toolbox(commander: @commander, item: @item, el: @$('#toolbox'))  
+      @simulation = new Simulation(commander: @commander, item: @item, el: @$('#simulation'))  
       @selection = new Selection(commander: @commander, item: @item, el: @$('#selection'))
 
   deactivate: ->
