@@ -4,8 +4,8 @@ require('lib/fetch_models')
 require('jqueryify')
 Spine = require('spine')
 # require broke for the bacon module: should be
-# Bacon = require('baconjs').Bacon
-Bacon = require('baconjs/dist/Bacon').Bacon
+# Bacon = require('baconjs')
+Bacon = require('baconjs/dist/Bacon')
 Drawings = require('controllers/drawings')
 Palettes = require('controllers/palettes')
 
@@ -24,5 +24,5 @@ class App extends Spine.Stack
     super
     Spine.Route.setup()
     @navigate('/drawings')
-
+    
 module.exports = App  
