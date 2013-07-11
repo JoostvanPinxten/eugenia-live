@@ -8,11 +8,13 @@ Spine = require('spine')
 Bacon = require('baconjs/dist/Bacon')
 Drawings = require('controllers/drawings')
 Palettes = require('controllers/palettes')
+Simulations = require('controllers/simulations')
 
 class App extends Spine.Stack
   controllers:
     palettes: Palettes
     drawings: Drawings
+    simulations : Simulations
       
   routes:
     '/drawings/:d_id/palette' : 'palettes'
