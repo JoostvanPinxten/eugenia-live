@@ -3,11 +3,12 @@ MovesPath = require('models/moves_path')
 SimplifiesSegments = require('models/simplifies_segments')
 LinkShape = require('models/link_shape')
 
+# Should extend Element
 class Link extends Spine.Model
   @configure "Link", "sourceId", "targetId", "segments", "shape"
   @belongsTo 'drawing', 'models/drawing'
   
-  # TODO duplication with Node
+  # TODO duplication with Node (inherit from Element?)
   constructor: (attributes) ->
     super
     @k = v for k,v of attributes
@@ -49,5 +50,12 @@ class Link extends Spine.Model
   toSegments: =>
     for s in @segments
       new paper.Segment(s.point, s.handleIn, s.handleOut)
+
+  linkShape: =>
+    LinkShape.find(@shape) if @shape
+
+  getShape: =>
+    @linkShape()
+
     
 module.exports = Link

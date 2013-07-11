@@ -2,6 +2,7 @@ Spine = require('spine')
 Link = require('models/link')
 NodeShape = require('models/node_shape')
 
+# Should extend Element
 class Node extends Spine.Model
   @configure "Node", "shape", "position", "propertyValues"
   @belongsTo 'drawing', 'models/drawing'
@@ -49,5 +50,7 @@ class Node extends Spine.Model
   
   nodeShape: =>
     NodeShape.find(@shape) if @shape and NodeShape.exists(@shape)
-
+      
+  getShape: =>
+    @nodeShape()
 module.exports = Node

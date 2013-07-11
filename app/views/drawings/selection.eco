@@ -1,4 +1,5 @@
 <% if not $.isEmptyObject(@selection): %>
+<h2><%= @definition.displayName()%> properties</h2>
   <% if not $.isEmptyObject(@selection.propertyValues): %>
     <table class="table table-bordered">
     <thead>

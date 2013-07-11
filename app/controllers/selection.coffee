@@ -18,7 +18,9 @@ class Selection extends Spine.Controller
     if @item
       @selection = null
       @selection = @item.selection[0] if @item.selection.length is 1
-      @html require('views/drawings/selection')({selection: @selection, readOnly : @readOnly})
+      @definition = null
+      @definition = @selection.getShape() if @selection
+      @html require('views/drawings/selection')({selection: @selection, readOnly : @readOnly, definition : @definition})
 
   
   updatePropertyValue: (event) =>
