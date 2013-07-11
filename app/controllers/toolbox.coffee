@@ -35,8 +35,8 @@ class Toolbox extends Spine.Controller
 
     @switchTo(link.data('toolName'))
     @currentTool.setParameter('shape', link.data('toolShape'))
-    
-    $("li.active").removeClass("active")
+    # remove all other active selected tools (in the container with id 'toolbox')
+    $("#toolbox li.active").removeClass("active")
     link.parent().addClass("active")
     event.preventDefault()
     
