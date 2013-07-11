@@ -69,11 +69,14 @@ class Elements
     e.x or= 0
     e.y or= 0
     path = @createPath(e.figure, e.size)
+
     path.position = new paper.Point(position).add(e.x, e.y)
     path.fillColor = e.fillColor
     path.strokeColor = e.borderColor
     path
 
+  # TODO: document these for the user!
+  # TODO: provide some user options for the location of elements
   createPath: (figure, size) =>
     switch figure
       when "rounded"
@@ -84,6 +87,8 @@ class Elements
         new paper.Path.Oval(rect)
       when "rectangle"
         new paper.Path.Rectangle(0, 0, size.width, size.height)
+      when "line"
+        new paper.Path.Line(new paper.Point(0, 0), new paper.Point(size.width, size.height))
 
 
 class NodeShape extends Spine.Model
