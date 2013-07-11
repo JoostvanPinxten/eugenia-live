@@ -1,4 +1,5 @@
-<% if not $.isEmptyObject(@propertyValues): %>
+<% if not $.isEmptyObject(@selection): %>
+  <% if not $.isEmptyObject(@selection.propertyValues): %>
     <table class="table table-bordered">
     <thead>
       <tr>
@@ -7,14 +8,19 @@
       </tr>
     </thead>
     <tbody>
-      <% for property,value of @propertyValues: %>
+      <% for property,value of @selection.propertyValues: %>
       <tr>
         <td style="vertical-align:middle"><%=property%></td>
-        <td><input type="text" data-property="<%=property%>" value="<%=value%>" style="margin-bottom: 0"></td>
+        <td>
+            <input type="text" data-property="<%=property%>" value="<%=value%>" style="margin-bottom: 0"<%if @readOnly: %> disabled<%end%>/>
+        </td>
       </tr>
       <% end %>
     </tbody>
   </table>
+  <% else: %>
+    <p>There are no properties to display for the selected element(s). Please select a single element to show its properties.</p>
+  <% end %> 
 <% else: %>
-  <p>There are no properties to display for the selected element(s). Please select a single element to show its properties.</p>
-<% end %>
+  <p>Please select a single element to show its properties.</p>
+<% end %>   
