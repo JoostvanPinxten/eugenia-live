@@ -17,6 +17,7 @@ class Node extends Spine.Model
     @propertyValues or= {}
   
   setPropertyValue: (property, value) ->
+    # We could check the shape first, to see if it has a slot with such a name!
     @propertyValues[property] = value
     @save()
   
@@ -53,4 +54,5 @@ class Node extends Spine.Model
       
   getShape: =>
     @nodeShape()
+    
 module.exports = Node

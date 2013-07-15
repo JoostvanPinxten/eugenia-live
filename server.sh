@@ -1,1 +1,1 @@
-hem server
+hem server -d
