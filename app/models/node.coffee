@@ -13,11 +13,11 @@ class Node extends Spine.Model
     @initialisePropertyValues()
 
   initialisePropertyValues: ->
-    @propertyValues or= @nodeShape().defaultPropertyValues() if @nodeShape()
+    @propertyValues or= @getShape().defaultPropertyValues() if @getShape()
     @propertyValues or= {}
   
   setPropertyValue: (property, value) ->
-    # We could check the shape first, to see if it has a slot with such a name!
+    # We could check the shape first, to see if it has a slot/property with such a name!
     @propertyValues[property] = value
     @save()
   
