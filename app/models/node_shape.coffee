@@ -1,5 +1,5 @@
 Spine = require('spine')
-
+Shape = require('models/shape')
 class Label
   constructor: (definition) ->
     @definition = definition
@@ -38,6 +38,7 @@ class Label
     text
   
   contentFor: (node) ->
+    # TODO: can't this be done by name? e.g. a key-value binding?
     content = @definition.pattern    
     for number in [0..@definition.for.length-1]
       pattern = ///
@@ -55,8 +56,6 @@ class Label
     return text unless text.length > @definition.length
     return text.substring(0, @definition.length-3).trim() + "..."
       
-
-
 class Elements
   constructor: (elements) ->
     @elements = elements
@@ -68,16 +67,17 @@ class Elements
   createElement: (e, position) =>
     e.x or= 0
     e.y or= 0
-    path = @createPath(e.figure, e.size)
+    path = @createPath(e.figure, e.size, e)
 
     path.position = new paper.Point(position).add(e.x, e.y)
-    path.fillColor = e.fillColor
+    
+    path.fillColor = e.fillColor unless e.fillColor is "transparent"
     path.strokeColor = e.borderColor
     path
 
   # TODO: document these for the user!
   # TODO: provide some user options for the location of elements
-  createPath: (figure, size) =>
+  createPath: (figure, size, options) =>
     switch figure
       when "rounded"
         rect = new paper.Rectangle(0, 0, size.width, size.height)
@@ -89,6 +89,19 @@ class Elements
         new paper.Path.Rectangle(0, 0, size.width, size.height)
       when "line"
         new paper.Path.Line(new paper.Point(0, 0), new paper.Point(size.width, size.height))
+      when "polygon"
+        options.sides or= 3
+        options.radius or= 50
+        new paper.Path.RegularPolygon(new paper.Point(0, 0), options.sides, options.radius)
+      when "path"
+        path = new paper.Path()
+        for point in options.points
+          path.add(new paper.Point(point.x, point.y))
+        
+        path
+      else
+        console.warn('Unable to draw shape for ' + figure)
+        paper.Path.Rectangle(0, 0, 50, 50)
 
 
 class NodeShape extends Spine.Model
