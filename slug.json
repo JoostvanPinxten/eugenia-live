@@ -19,7 +19,6 @@
         "lib/codemirror/codemirror.js", 
         "lib/codemirror/language/javascript/javascript.js",
         "lib/codemirror/lint/lint.js",
-        "lib/codemirror/lint/javascript-lint.js",
         "lib/codemirror/lint/json-lint.js"
 
       ],
