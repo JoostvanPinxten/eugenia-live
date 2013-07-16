@@ -4,7 +4,7 @@ NodeShape = require('models/node_shape')
 
 # Should extend Element
 class Node extends Spine.Model
-  @configure "Node", "shape", "position", "propertyValues"
+  @configure "Node", "shape", "position", "propertyValues", "representation"
   @belongsTo 'drawing', 'models/drawing'
     
   constructor: (attributes) ->
@@ -31,12 +31,13 @@ class Node extends Spine.Model
     @position = distance.add(@position)
     link.reconnectTo(@id, distance) for link in @links()
     @save()
+    @trigger("update")
 
   paperId: =>
     "node" + @id
 
-  toPath: =>
-    path = @nodeShape().draw(@)
+  toPath:(renderer) =>
+    path = @nodeShape().draw(renderer)
     path.name = @paperId()
     path
   
@@ -54,5 +55,9 @@ class Node extends Spine.Model
       
   getShape: =>
     @nodeShape()
+
+  update: ->
+    #@drawing.refresh()
+    #console.log('updateje')
     
 module.exports = Node

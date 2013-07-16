@@ -12,29 +12,47 @@ class CanvasRenderer
     @addAll(Link)
       
   bindToChangeEvents: =>
+
+    # This is necessary to remove bindings that were already in place (by e.g. switching from editing to simulating)
+    Node.unbind("create")
+    Link.unbind("create")
+    Node.unbind("refresh")
+    Link.unbind("refresh")
+
     Node.bind("refresh", => @addAll(Node))
     Link.bind("refresh", => @addAll(Link))
     Node.bind("create", @addOne)
-    Link.bind("create", @addOne)
-  
+    Link.bind "create", @addOne
+    
   addAll: (type) =>
     associationMethod = type.className.toLowerCase() + 's' #e.g. Node -> nodes
     elements = @drawing[associationMethod]().all()         #e.g. @drawing.nodes().all()
     #console.log("adding all " + elements.length + " " + type.className + "s")
-    @renderOne(element) for element in elements
+    @addOne(element) for element in elements
     @updateDrawingCache()
   
   addOne: (element) =>
-    @renderOne(element)
-    @updateDrawingCache()
-  
-  renderOne: (element) =>
+    # Set-up a renderer, then trigger 'updates' and 'destroys' on the item
     renderer = require("views/drawings/#{element.constructor.className.toLowerCase()}_renderer")
     
     if (renderer)
-      new renderer(element).render()      
+      new renderer(element).render()
     else
       console.warn("no renderer attached for " + element)
+    @renderOne(element)
+    @updateDrawingCache()
+
+  
+  renderOne: (element) =>
+    element.trigger("update")
+    ###unless 
+    renderer = require("views/drawings/#{element.constructor.className.toLowerCase()}_renderer")
+    
+    if (renderer)
+      new renderer(element).render()
+    else
+      console.warn("no renderer attached for " + element)
+      ###
   
   updateDrawingCache: =>
     @drawing.cache = @canvas.toDataURL()

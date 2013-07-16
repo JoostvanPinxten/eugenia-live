@@ -4,10 +4,23 @@ Label = require('models/helpers/label')
 class Elements
   constructor: (elements) ->
     @elements = elements
+    @children = {}
     
-  draw: (node) ->
-    children = (@createElement(e, node.position) for e in @elements)
-    new paper.Group(children)
+  draw: (renderer) ->
+    # We should check if this element's group already contains 
+    # the paths we need to draw, which should be identifiable 
+    # by name.
+    renderer.children = (@createElement(e, renderer.item.position) for e in @elements)
+    repr = new paper.Group(renderer.children)
+    #renderer.representation[repr.id] = this
+    renderer.representation[this] = repr
+    #renderer.shapes[repr.id] = repr
+    # now that we are certain that we have a representation, 
+    # refresh it, so that it reflects the current value of its properties
+    @refresh(renderer, e, repr)
+
+    repr
+
 
   createElement: (e, position) =>
     e.x or= 0
@@ -22,6 +35,8 @@ class Elements
 
   # TODO: document these for the user!
   # TODO: provide some user options for the location of elements
+  # TODO: might refactor this into simple elements that have their 
+  # own 'refresh', which can be executed in a certain context
   createPath: (figure, size, options) =>
     switch figure
       when "rounded"
@@ -47,6 +62,18 @@ class Elements
       else
         console.warn('Unable to draw shape for ' + figure)
         paper.Path.Rectangle(0, 0, 50, 50)
+  
+  refresh: (renderer, element, representation) ->
+    # this function may become a lot more complex? perhaps even use Bacon to do this in a nicer way
+    representation.position = renderer.item.position # + the elements position?
+    #@updateElement(node, child, node.position) for child in @children
+
+    #console.log(node)
+  updateElement: (node, path, position) ->
+    #path.position = new paper.Point(position).add(e.x, e.y)
+    
+    #path.fillColor = e.fillColor unless e.fillColor is "transparent"
+    #path.strokeColor = e.borderColor
 
 
 class NodeShape extends Spine.Model
@@ -77,4 +104,9 @@ class NodeShape extends Spine.Model
   destroyNodes: ->
     node.destroy() for node in require('models/node').findAllByAttribute("shape", @id)
     
+  refresh: (renderer) ->
+    for element in Object.keys(renderer.representation)
+      @_elements.refresh(renderer, element, renderer.representation[element])
+
+
 module.exports = NodeShape
