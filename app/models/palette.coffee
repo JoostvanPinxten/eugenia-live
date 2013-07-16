@@ -5,6 +5,8 @@ class Palette extends Spine.Model
   @hasMany 'nodeShapes', 'models/node_shape'
   @hasMany 'linkShapes', 'models/link_shape'
   @belongsTo 'drawing', 'models/drawing'
+
+  String name = "<no name specified>"
   
   constructor: ->
     super
