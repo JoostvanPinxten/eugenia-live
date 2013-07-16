@@ -1,5 +1,4 @@
 Spine = require('spine')
-#Shape = require('models/shape')
 
 class LinkShape extends Spine.Model
   @configure "LinkShape", "name", "color", "style"

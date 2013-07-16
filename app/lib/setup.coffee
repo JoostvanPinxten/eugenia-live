@@ -3,8 +3,6 @@ require('es5-shimify')
 require('jqueryify')
 require('lib/bootstrap')
 
-#require('baconjs')
-
 require('spine')
 require('spine/lib/local')
 require('spine/lib/ajax')

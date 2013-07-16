@@ -98,23 +98,27 @@ class ConcentrationPaletteSpecification
           "elements": [
             {
               "figure": "rectangle",
-              "size": {
-                "width": 75,
-                "height": 75
-              },
+              "size" : {"height": 100, "width" : 100},
               "fillColor": "white",
               "borderColor": "black",
               "x": 0,
               "y": 0
             },
             {
-              "figure": "polygon",
-              "sides": 3,
-              "radius": 20,
-              "fillColor": "green",
-              "borderColor": "red",
-              "x": -35,
-              "y": -35
+              "figure": "path",
+              "points": [
+                {"x": -20, "y" : 40},
+                {"x": 50, "y" : 40},
+                {"x": 40, "y" : 10},
+                {"x": 80, "y" : 50},
+                {"x": 40, "y" : 90},                
+                {"x": 50, "y" : 60},
+                {"x": -20, "y" : 60},
+                {"x": -20, "y" : 40}
+              ],
+              "borderColor": "green",
+              "fillColor" : "white",
+              "x" : -30
             }
           ]
         },
@@ -166,7 +170,7 @@ class ConcentrationPaletteSpecification
               "figure": "polygon",
               "fillColor": "#FFCCFF",
               "borderColor": "black",
-              "sides" : 10,
+              "sides" : 5,
               "radius" : 50,
               "x": 0,
               "y": 0
