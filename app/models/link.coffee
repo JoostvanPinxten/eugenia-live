@@ -33,19 +33,24 @@ class Link extends Spine.Model
   updateSegments: (segments) =>
     @segments = new SimplifiesSegments().for(segments)
   
-  reconnectTo: (nodeId, offset) =>
-    mover = new MovesPath(@toPath().firstChild, offset)
-    mover.moveStart() if nodeId is @sourceId
-    mover.moveEnd() if nodeId is @targetId
-    @updateSegments(mover.finalise())
+  reconnectTo: (node, offset) =>
+    # FIXME: reference component by paper id iso firstChild
+    #mover = new MovesPath(@, node, offset)
+    #mover.moveStart() if node.id is @sourceId
+    #mover.moveEnd() if node.id is @targetId
+    #@updateSegments(mover.finalise())
+
+    # TODO: refactor into something similar to the original MovesPath object
+    @trigger('reconnect', node)
+
     @save()
   
   paperId: =>
     "link" + @id
       
-  toPath: =>
+  toPath: (renderer) =>
     s = LinkShape.find(@shape)
-    group = s.draw(@)
+    group = s.draw(renderer)
 
     path = group.firstChild
     group.name = @paperId()

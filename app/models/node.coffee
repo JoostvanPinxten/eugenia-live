@@ -20,6 +20,7 @@ class Node extends Spine.Model
     # We could check the shape first, to see if it has a slot/property with such a name!
     @propertyValues[property] = value
     @save()
+    
   
   getPropertyValue: (property) ->
     @propertyValues[property]
@@ -29,10 +30,9 @@ class Node extends Spine.Model
 
   moveBy: (distance) =>
     @position = distance.add(@position)
-    link.reconnectTo(@id, distance) for link in @links()
+    link.reconnectTo(@, distance) for link in @links()
     @save()
-    @trigger("update")
-
+    
   paperId: =>
     "node" + @id
 
@@ -42,8 +42,10 @@ class Node extends Spine.Model
     path
   
   select: (layer) =>
+
     layer.children[@paperId()].selected = true
-  
+    @trigger('selected')
+
   destroy: (options = {}) =>
     destroyed = super(options)
     memento =
@@ -56,8 +58,5 @@ class Node extends Spine.Model
   getShape: =>
     @nodeShape()
 
-  update: ->
-    #@drawing.refresh()
-    #console.log('updateje')
     
 module.exports = Node

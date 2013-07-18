@@ -6,8 +6,8 @@
          EuGENia Live allows you to quickly build a
          graphical editor for a domain-specific language.
          You can use your DSL in the browser, or export and
-         generate more powerful DSL tools that integrate with the
-         Eclipse development environment.
+         generate more powerful DSL tools (of parts of the DSL) 
+         that integrate with the Eclipse development environment.
       </p>
       <p>
         <a class="btn btn-medium" target="_blank" href="http://www.di.univaq.it/diruscio/sites/XM2012/xm2012_submission_6.pdf">Workshop Paper &raquo;</a>

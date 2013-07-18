@@ -10,7 +10,22 @@ class CanvasRenderer
     @bindToChangeEvents()
     @addAll(Node)
     @addAll(Link)
+    ###
+    @grid = new paper.Group
+
+    for i in [0..50]
+      l = new paper.Path.Line( new paper.Point(i*20,0), new paper.Point(i*20, 400) )
+      l.strokeColor = 'gray';
+      @grid.addChild l
+    for j in [0..20]
+      l = new paper.Path.Line( new paper.Point(0,j*20), new paper.Point(1000, j*20) )
+      l.strokeColor = 'gray';
+
+      @grid.addChild l
       
+    console.log 'added grid'
+    paper.project.activeLayer.insertChild(0, @grid)
+    ###
   bindToChangeEvents: =>
 
     # This is necessary to remove bindings that were already in place (by e.g. switching from editing to simulating)
@@ -36,12 +51,11 @@ class CanvasRenderer
     renderer = require("views/drawings/#{element.constructor.className.toLowerCase()}_renderer")
     
     if (renderer)
-      new renderer(element).render()
+      new renderer(element)
     else
       console.warn("no renderer attached for " + element)
     @renderOne(element)
     @updateDrawingCache()
-
   
   renderOne: (element) =>
     element.trigger("update")

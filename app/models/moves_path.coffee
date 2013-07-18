@@ -1,5 +1,5 @@
 class MovesPath 
-  constructor: (path, offset) ->
+  constructor: (node, path, offset) ->
     @path = path
     @offset = offset
     

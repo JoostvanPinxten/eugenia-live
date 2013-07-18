@@ -6,6 +6,11 @@ class Elements
     @elements = elements
     @children = {}
     
+    #FIXME: on an update of the shape (through e.g. updateAttributes), the old renderer/nodes may still be in memory
+
+  paperId: (item) ->
+    item.paperId + '-elements'
+
   draw: (renderer) ->
     # We should check if this element's group already contains 
     # the paths we need to draw, which should be identifiable 
@@ -13,14 +18,12 @@ class Elements
     renderer.children = (@createElement(e, renderer.item.position) for e in @elements)
     repr = new paper.Group(renderer.children)
     #renderer.representation[repr.id] = this
-    renderer.representation[this] = repr
+    renderer.representation[@paperId(renderer.item)] = repr
     #renderer.shapes[repr.id] = repr
     # now that we are certain that we have a representation, 
     # refresh it, so that it reflects the current value of its properties
     @refresh(renderer, e, repr)
-
     repr
-
 
   createElement: (e, position) =>
     e.x or= 0
@@ -45,7 +48,7 @@ class Elements
       when "ellipse"
         rect = new paper.Rectangle(0, 0, size.width*2, size.height*2)
         new paper.Path.Oval(rect)
-      when "rectangle"
+      when "rectangle"  
         new paper.Path.Rectangle(0, 0, size.width, size.height)
       when "line"
         new paper.Path.Line(new paper.Point(0, 0), new paper.Point(size.width, size.height))
@@ -66,9 +69,13 @@ class Elements
   refresh: (renderer, element, representation) ->
     # this function may become a lot more complex? perhaps even use Bacon to do this in a nicer way
     representation.position = renderer.item.position # + the elements position?
+
+    #representation.fillColor = if element.fillColor is "transparent" then null else element.fillColor
+    #representation.strokeColor = if element.borderColor is "transparent" then null else element.borderColor
+
     #@updateElement(node, child, node.position) for child in @children
 
-    #console.log(node)
+    #console.log(renderer.item, representation)
   updateElement: (node, path, position) ->
     #path.position = new paper.Point(position).add(e.x, e.y)
     
@@ -98,15 +105,24 @@ class NodeShape extends Spine.Model
   displayName: =>
     @name.charAt(0).toUpperCase() + @name.slice(1)
   
-  draw: (node) =>
-    @_label.draw(node, @_elements.draw(node))
+  draw: (renderer) =>
+    group = new paper.Group
+
+    shape = @_elements.draw(renderer)
+    group.addChild(shape)
+    label = @_label.draw(renderer, group, shape)
+    group.addChild(label)
+    group
       
   destroyNodes: ->
     node.destroy() for node in require('models/node').findAllByAttribute("shape", @id)
     
   refresh: (renderer) ->
-    for element in Object.keys(renderer.representation)
-      @_elements.refresh(renderer, element, renderer.representation[element])
+    # console.log "refresh", renderer
+    # can now be done based on the names of the paperId?!
+    shape = renderer.representation[@_elements.paperId(renderer.item)]
+    @_elements.refresh(renderer, @_elements, shape)
+    @_label.updateText(renderer.representation[@_label], renderer.item, shape) 
 
 
 module.exports = NodeShape
