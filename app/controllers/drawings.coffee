@@ -6,6 +6,7 @@ Spine.SubStack = require('lib/substack')
 CanvasRenderer = require('views/drawings/canvas_renderer')
 Toolbox = require('controllers/toolbox')
 Selection = require('controllers/selection')
+ElementOverview = require('controllers/element_overview')
 #Simulation = require('controllers/simulation')
 Commander = require ('models/commands/commander')
 
@@ -66,10 +67,11 @@ class Show extends Spine.Controller
     # LoggingCommander = require ('models/commands/logging_commander')
     # @commander = new LoggingCommander(new Commander())
     @commander = new Commander()
-    # i think we should rename item to drawing, makes more sense here
+    # i think we should rename item to drawing, makes more sense here, or is this Spine specific?
     @item = Drawing.find(params.id)
     @item.clearSelection()
     #@log "Palette: #{@item.palette().id}"
+    @item.trigger("update")
     @render()
 
   render: ->
@@ -79,6 +81,7 @@ class Show extends Spine.Controller
       @toolbox = new Toolbox(commander: @commander, item: @item, el: @$('#toolbox'))  
       #@simulation = new Simulation(commander: @commander, item: @item, el: @$('#simulation'))  
       @selection = new Selection(commander: @commander, item: @item, el: @$('#selection'))
+      @overview = new ElementOverview(item: @item, el: @$('#element-overview'))
 
   deactivate: ->
     super

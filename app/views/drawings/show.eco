@@ -21,19 +21,6 @@
       <div id="selection" class="well">
       </div>
       <div id="element-overview" class="well">
-        <!--TODO: refactor to own controller+view (and rather use a TreeView component-->
-        <h2>Nodes</h2>
-        <ul>
-          <% for node in @nodes().all(): %>
-            <li><%=node.getShape().name%> (<%=node.id%>, <%=node.paperId()%>): "todo; node name"</li>
-          <% end %>
-        </ul>
-        <h2>Links</h2>
-        <ul>
-          <% for link in @links().all(): %>
-            <li><%=link.getShape().name%> : "todo; link name"</li>
-          <% end %>
-        </ul>
       </div>
     </div>
   </div>
