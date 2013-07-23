@@ -3,9 +3,11 @@ class DeleteLink
   
   run: =>  
     @memento = @link.destroy()
+    paper.view.draw()
   
   undo: =>
     @drawing.addLink(@memento)
+    paper.view.draw()
     
   rebase: (oldId, newId) =>
     @memento.sourceId = newId if @memento.sourceId is oldId
