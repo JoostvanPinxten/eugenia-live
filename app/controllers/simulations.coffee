@@ -4,7 +4,7 @@ Commander = require ('models/commands/commander')
 PaletteSpecification = require('models/palette_specification')
 Drawing = require('models/drawing')
 CanvasRenderer = require('views/drawings/canvas_renderer')
-Toolbox = require('controllers/toolbox')
+#Toolbox = require('controllers/toolbox')
 Selection = require('controllers/selection')
 Spine.SubStack = require('lib/substack')
 
@@ -49,7 +49,7 @@ class SimulationControl extends Spine.Controller
     @render()
  
     getCurrentValue = (event) ->
-      parseInt(event.currentTarget.value, 10)
+      parseInt(event.currentTarget.value, 10) # always use base 10, even if it starts with 0 or 0x
     
     get = (id) ->
       $('#'+id).asEventStream('change').map(getCurrentValue)

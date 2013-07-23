@@ -71,17 +71,17 @@ class Show extends Spine.Controller
     @item = Drawing.find(params.id)
     @item.clearSelection()
     #@log "Palette: #{@item.palette().id}"
-    @item.trigger("update")
+    #@item.trigger("update")
     @render()
 
   render: ->
     @html require('views/drawings/show')(@item)
     if @item
-      new CanvasRenderer(drawing: @item, canvas: @$('#drawing')[0])
+      @renderer = new CanvasRenderer(drawing: @item, canvas: @$('#drawing')[0])
       @toolbox = new Toolbox(commander: @commander, item: @item, el: @$('#toolbox'))  
       #@simulation = new Simulation(commander: @commander, item: @item, el: @$('#simulation'))  
       @selection = new Selection(commander: @commander, item: @item, el: @$('#selection'))
-      @overview = new ElementOverview(item: @item, el: @$('#element-overview'))
+      @overview = new ElementOverview(commander: @commander, item: @item, el: @$('#element-overview'))
 
   deactivate: ->
     super
@@ -90,7 +90,15 @@ class Show extends Spine.Controller
   changeMode: (event) =>
     event.preventDefault()
     @mode = $(event.target).data('mode')
-    @navigate('/simulate', @item.id) if @mode is 'simulate'    
+    if @mode is 'simulate'    
+      # this is actually not the responsibility of the drawing? 
+      # but it's the only place that has access to the toolbox
+
+      @toolbox.switchTo("select")
+
+
+      @navigate('/simulate', @item.id)
+
 
 class Drawings extends Spine.SubStack
   controllers:

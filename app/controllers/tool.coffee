@@ -21,12 +21,12 @@ class Tool extends paper.Tool
   onKeyDown: (event) ->
     # don't intercept key events if any DOM element
     # (e.g. form field) has focus
+    # FIXME: don't intercept values in case the canvas is in simulation mode (e.g. data-simulation=true?)
     if (document.activeElement is document.body)      
       if (event.key is 'delete')
         @run(new DeleteElement(@drawing, e)) for e in @selection()
         @clearSelection()
-
-      else if (event.key is 'z')
+      else if (event.key is 'z' and event.event.ctrlKey) # CTRL + Z has been pressed
         @commander.undo()
 
   changeSelectionTo: (nodeOrLink) ->

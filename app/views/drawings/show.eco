@@ -9,7 +9,9 @@
       </li>
     </ul>
   </legend>
-  
+
+  <p>Based on palette: <%=@palette().name%></p>
+
   <div class="row-fluid">
     <div id="toolbox" class="span2">
         
