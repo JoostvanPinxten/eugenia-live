@@ -11,6 +11,6 @@ class NodeRenderer extends ElementRenderer
   draw: =>
     unless @el 
       @el = @item.toPath(@)
-    @item.nodeShape().refresh(@)
+    @refresh()
       
 module.exports = NodeRenderer

@@ -4,7 +4,8 @@ Spine = require('spine')
 # FIXME: are these properly cleaned up? Could be the case that there is still some reference floating around somewhere?
 class ElementRenderer  
   constructor: (@item) ->
-    @item.bind("update", @render)
+    @item.bind("update", @refresh)
+    @item.bind("render", @render)
     @item.bind("destroy", @remove)
     @item.bind("selected", @bringToFront)
     @item.getShape().bind("update", @remove)
@@ -31,10 +32,17 @@ class ElementRenderer
         
   remove: =>
     @el.remove()
+
+    # cleanup any bindings we may have on this object
     @item.unbind("update", @render)
+    @item.unbind("render", @render)
     @item.unbind("destroy", @remove)
     @item.unbind("selected", @bringToFront)
     @item.getShape().unbind("update", @remove)
+
+  refresh: =>
+    # move the element to it's new position, without re-rendering the whole bunch
+    @item.nodeShape().refresh(@)
 
   sendToBack: =>
     paper.project.activeLayer.insertChild(0, @el)

@@ -1,6 +1,9 @@
 Spine = require('spine')
 Shape = require('models/shape')
 Label = require('models/helpers/label')
+
+Bacon = require('baconjs/dist/Bacon').Bacon
+
 class Elements
   constructor: (elements) ->
     @elements = elements
@@ -15,7 +18,7 @@ class Elements
     # We should check if this element's group already contains 
     # the paths we need to draw, which should be identifiable 
     # by name.
-    renderer.children = (@createElement(e, renderer.item.position) for e in @elements)
+    renderer.children = (@createElement(e, renderer.item.position, renderer.item, renderer) for e in @elements)
     repr = new paper.Group(renderer.children)
     #renderer.representation[repr.id] = this
     renderer.representation[@paperId(renderer.item)] = repr
@@ -25,14 +28,14 @@ class Elements
     @refresh(renderer, e, repr)
     repr
 
-  createElement: (e, position) =>
+  createElement: (e, position, node, renderer) =>
     e.x or= 0
     e.y or= 0
-    path = @createPath(e.figure, e.size, e)
 
-    path.position = new paper.Point(position).add(e.x, e.y)
-    
-    path.fillColor = e.fillColor unless e.fillColor is "transparent"
+    path = @createPath(e.figure, e.size, e, node, renderer)
+    # make these values dynamic in case of expression 
+    path.position = new paper.Point(position).add(e.x, e.y) 
+    path.fillColor = if (e.fillColor is "transparent") then null else e.fillColor 
     path.strokeColor = e.borderColor
     path
 
@@ -40,11 +43,72 @@ class Elements
   # TODO: provide some user options for the location of elements
   # TODO: might refactor this into simple elements that have their 
   # own 'refresh', which can be executed in a certain context
-  createPath: (figure, size, options) =>
+  createPath: (figure, size, options, node, renderer) =>
+
+    # something like: update function that sets the variables according to the 
+    # expressions set in the definition, listening to the update events of node, 
+    # based on the values of the properties
+
+    # e.g. width : "$width" <- look up propertyValue for property called "width" on node?
+
+    # check if it is a string or a number first
+    # string -> always parse it as an expression and then throw an "eval" over it
+    # number -> apply directly
+
     switch figure
       when "rounded"
         rect = new paper.Rectangle(0, 0, size.width, size.height)
-        new paper.Path.RoundRectangle(rect, new paper.Size(10, 10))
+
+        rounded = new paper.Path.RoundRectangle(rect, new paper.Size(10, 10))
+
+        Bacon.fromEventTarget(node, "propertyUpdate").onValue (node)->
+
+            ###
+              The following code looks for properties that it can use to set the 
+              geometry of the shapes. It then matches text surrounded by ${ and } 
+              and then evaluates the contents as the current/previous? value of these properties.           
+
+              FIXME: provide a parser to do this properly
+              FIXME: in what order should the contents be evaluated? it is currently evaluated 
+              in the order of appearance of the properties in its shape
+            ###
+            content = node.getPropertyValue("width")
+            if content
+              for property in node.getShape().properties
+                pattern = ///
+                  \$\{
+                 #{property}
+                  \}
+                ///g
+                value = node.getPropertyValue(property)
+                content = content.replace(pattern, value)
+              #console.log('out', content)
+
+            newWidth = parseInt(node.getPropertyValue("width"),10)
+            newWidth = 100 if isNaN(newWidth)
+            newRect = new paper.Rectangle(0, 0, newWidth, size.height)
+
+            newRounded = new paper.Path.RoundRectangle(newRect, new paper.Size(10, 10))
+            #console.log('test', newRounded.getPosition())
+            newRounded.fillColor = rounded.fillColor
+            newRounded.strokeColor = rounded.strokeColor
+            #console.log rounded.parent
+            newRounded.name = rounded.name
+            renderer.linkElementToModel(newRounded)
+
+            point = new paper.Point(rounded.position.x, rounded.position.y)
+            rounded.parent.addChild(newRounded)
+
+            newRounded.position = point
+            newRounded.position.y = rounded.position.y
+            path.fillColor = if (e.fillColor is "transparent") then null else e.fillColor 
+            path.strokeColor = e.borderColor
+            rounded.remove()
+            rounded = newRounded
+            # reconnect links? geometry may have changed?
+            paper.view.draw()
+
+        rounded
       when "ellipse"
         rect = new paper.Rectangle(0, 0, size.width*2, size.height*2)
         new paper.Path.Oval(rect)

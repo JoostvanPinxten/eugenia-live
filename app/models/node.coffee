@@ -19,8 +19,8 @@ class Node extends Spine.Model
   setPropertyValue: (property, value) ->
     # We could check the shape first, to see if it has a slot/property with such a name!
     @propertyValues[property] = value
+    @trigger("propertyUpdate")
     @save()
-    
   
   getPropertyValue: (property) ->
     @propertyValues[property]

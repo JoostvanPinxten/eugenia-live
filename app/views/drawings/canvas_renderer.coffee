@@ -1,5 +1,6 @@
 Link = require('models/link')
 Node = require('models/node')
+Bacon = require('baconjs/dist/Bacon')
 
 class CanvasRenderer
   constructor: (options) ->
@@ -55,10 +56,14 @@ class CanvasRenderer
     else
       console.warn("no renderer attached for " + element)
     @renderOne(element)
+    #element.bind("propertyUpdate", (el) -> console.log("prop update"))
+    #element.bind("propertyUpdate", (el) -> element.trigger("render"))
+    #stream = Bacon.fromEventTarget(element, "update")
+    #stream.onValue (element) -> console.log(element.getPropertyValue("name"))
     @updateDrawingCache()
   
   renderOne: (element) =>
-    element.trigger("update")
+    element.trigger("render")
     ###unless 
     renderer = require("views/drawings/#{element.constructor.className.toLowerCase()}_renderer")
     
