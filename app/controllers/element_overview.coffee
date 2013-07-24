@@ -10,6 +10,8 @@ class ElementOverview extends Spine.Controller
   events: 
     "click .delete[data-node]": "deleteNode",
     "click .delete[data-link]": "deleteLink"
+    "click .select[data-node]": "selectNode",
+    "click .select[data-link]": "selectLink"
 
   constructor: ->
     super
@@ -23,17 +25,32 @@ class ElementOverview extends Spine.Controller
     @html require('views/drawings/element_overview')(@item)
 
   deleteNode: (event) =>
-    nodeId = $(event.currentTarget).data('node')
-    node = Node.find(nodeId)
-
+    node = @extractNodeFromEvent(event)
     @deleteElement(node)
 
+  extractNodeFromEvent: (event) ->
+    nodeId = $(event.currentTarget).data('node')
+    Node.find(nodeId)
+
+  extractLinkFromEvent: (event) ->
+    linkId = $(event.currentTarget).data('link')
+    Link.find(linkId)
 
   deleteLink: (event) =>
-    linkId = $(event.currentTarget).data('link')
-    link = Link.find(linkId)
-
+    link = @extractLinkFromEvent(event)
     @deleteElement(link)
+
+  selectNode: (event) =>
+    @item.clearSelection()
+    
+    node = @extractNodeFromEvent(event)
+    @item.select(node)
+
+  selectLink: (event) =>
+    @item.clearSelection()
+
+    link = @extractLinkFromEvent(event)
+    @item.select(link)
 
   deleteElement: (element) ->
     if element
