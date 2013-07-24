@@ -6,13 +6,13 @@ class DeleteNode
   run: =>  
     @runDeleteLinks()
     @nodeMemento = @node.destroy()
-    paper.view.draw()
+    paper.view.draw(true)
   
   undo: =>
     oldId = @node.id
     @node = @drawing.addNode(@nodeMemento)
     @undoDeleteLinks(oldId, @node.id)
-    paper.view.draw()
+    paper.view.draw(true)
 
   
   runDeleteLinks: =>
