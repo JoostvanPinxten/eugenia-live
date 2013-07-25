@@ -5,7 +5,7 @@ Bacon = require('baconjs/dist/Bacon').Bacon
 redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 class BasicShape
-  constructur: (@parent, @options) ->
+  constructor: (@parent, @options) ->
     # the current representation initializes to null
     @current = null
 
