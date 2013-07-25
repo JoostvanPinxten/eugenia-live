@@ -1,6 +1,7 @@
 Spine = require('spine')
 Link = require('models/link')
 NodeShape = require('models/node_shape')
+simulationPoll = require('controllers/simulation_poll')
 
 # Should extend Element
 class Node extends Spine.Model
@@ -11,6 +12,11 @@ class Node extends Spine.Model
     super
     @k = v for k,v of attributes
     @initialisePropertyValues()
+
+    @getShape().bind "update", => console.log("updating instance")
+    #simulationPoll.currentTime.onValue (tick) =>
+      #@simulate(tick)
+
 
   initialisePropertyValues: ->
     @propertyValues or= @getShape().defaultPropertyValues() if @getShape()
@@ -33,6 +39,9 @@ class Node extends Spine.Model
     link.reconnectTo(@, distance) for link in @links()
     @save()
     
+  moveTo: (position) =>
+    @moveBy(new paper.Point(position).subtract(@position))
+
   paperId: =>
     "node" + @id
 
@@ -58,5 +67,10 @@ class Node extends Spine.Model
   getShape: =>
     @nodeShape()
 
+  simulate: (currentTime) =>
+    if @getShape().behavior and @getShape().behavior.tick
+      for property, expression of @getShape().behavior.tick
+        @setPropertyValue(property, eval(expression))
+        #console.log(property, expression)
     
 module.exports = Node
