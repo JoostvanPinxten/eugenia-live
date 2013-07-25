@@ -1,4 +1,5 @@
 DeleteLink = require('models/commands/delete_link')
+redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 class DeleteNode
   constructor: (@drawing, @node) ->
@@ -6,13 +7,13 @@ class DeleteNode
   run: =>  
     @runDeleteLinks()
     @nodeMemento = @node.destroy()
-    paper.view.draw(true)
+    redrawCoordinator.requestRedraw(true)
   
   undo: =>
     oldId = @node.id
     @node = @drawing.addNode(@nodeMemento)
     @undoDeleteLinks(oldId, @node.id)
-    paper.view.draw(true)
+    redrawCoordinator.requestRedraw(true)
 
   
   runDeleteLinks: =>

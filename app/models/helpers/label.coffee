@@ -1,3 +1,5 @@
+redrawCoordinator = require('views/drawings/redraw_coordinator')
+
 class Label
   constructor: (@definition) ->
     if @definition and @definition.placement isnt "none"
@@ -45,6 +47,7 @@ class Label
       else
         textItem.content = @contentFor(node)
     textItem.position = @positionFor(shape)
+    redrawCoordinator.requestRedraw(true)
 
 
   createText: (node, position) ->
