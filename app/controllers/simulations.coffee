@@ -32,11 +32,29 @@ class Simulation extends Spine.Controller
     @navigate('/drawings', @item.id) if @mode is 'edit'
 
   render: =>
+    # if we navigate directly to here (without the intermediate drawing), then 
+    # the Toolbox is not instantiated, so we cannot select any items on the canvas
+    # Should this be refactored, so that the selection mechanism is independent of 
+    # the existence of the Toolbox?
     @html require('views/drawings/simulate')(@item)
 
     new CanvasRenderer(drawing: @item, canvas: @$('#drawing')[0])
-    @simulation = new SimulationControl(commander: @commander, item: @item, el: @$('#simulation'))  
+    @simulation = new SimulationControl(drawing: @drawing, commander: @commander, item: @item, el: @$('#simulation'))  
     @selection = new Selection(commander: @commander, item: @item, el: @$('#selection'), readOnly: true)    
+  
+  ###
+  # The SubStack implementation currently does not call the deactivate properly, so 
+  # it is hard to make the simulation stop when this controller is deactivated.
+  activate: ->
+      console.log('activate simulation')
+      super
+
+  deactivate: ->
+    console.log 'deactivate simulation'
+    simulationPoll.reset()
+    @
+
+    ###
 
 class SimulationControl extends Spine.Controller
   events:
@@ -44,7 +62,7 @@ class SimulationControl extends Spine.Controller
     "click button[data-start-simulation]" : "start"
     "click button[data-reset-simulation]" : "reset"
 
-  constructor: ->
+  constructor: (@item) ->
     super
     @render()
  
@@ -75,7 +93,21 @@ class SimulationControl extends Spine.Controller
     simulationPoll.stop()
 
   start: (event) =>
+    @startInteractive(@item.selection[0])
+
     simulationPoll.start()
+
+  startInteractive: (element) ->
+
+    updateWidth = (time, node) ->
+      node.moveTo([Math.cos(time) *100 + 200, Math.sin(time) * 100 + 200])
+
+      node.setPropertyValue("width", "" + Math.cos(time) * 100)
+      node.trigger("render")
+
+    #Bacon.combineWith(updateWidth, simulationPoll.counter)
+    simulationPoll.currentTime.onValue (tick) ->
+      updateWidth(tick, element)
 
   reset: (event) =>
     simulationPoll.reset()
@@ -89,9 +121,10 @@ class SimulationPoll
 
   constructor: ->
     # If we make this and displayResolution a Bacon Property, we don't have to worry about updates anymore
-    @timeStep = 0.01
+    @timeStep = 0.04 # 25 frames per second
 
     @counter = new Counter()
+    @runningStatus = new Bacon.Bus()
     # interval time in milliseconds, based on the timeStep
     @poll = Bacon.fromPoll 1000*@timeStep, => 
       new Bacon.Next =>
@@ -107,28 +140,52 @@ class SimulationPoll
     @displayResolution = -Math.floor(Math.log(@timeStep)/Math.LN10)
     @counterProperty.onValue (val) =>
       $('#current-simulation-time').text(val.ticks.toFixed(@displayResolution))
-    skip = (prev, cur) ->
-       prev is cur
-    @currentTime = (@counterProperty.map ('.ticks')).skipDuplicates(skip)
+    
+    @currentTime = (@counterProperty.map ('.ticks')).skipDuplicates()
 
+  ###
+  # Start the polling mechanism, if  it hasn't been started already
+  # Triggers a runningStatus change iff the polling mechanism 
+  #  is started
+  ###
   start: ->
     if @isRunning
       console.warn('Simulation Poll is already running! Use reset in order to reset time')
       return
 
     @isRunning = true 
-    return @poll
+    @runningStatus.push(@isRunning)
 
+  ###
+  # Stop the polling mechanism, if  it is currently running
+  # Triggers a runningStatus change iff the polling mechanism 
+  # is stopped.
+  ###
   stop: ->
     if not @isRunning
       console.warn('Simulation is not running')
+      return
+
     @isRunning = false
+    @runningStatus.push(@isRunning)    
 
+  ###
+  # Stop the polling mechanism, if  it is currently running and 
+  # returns the current time back to zero.
+  #Triggers a runningStatus change iff the polling mechanism 
+  # is stopped.
+  ###
   reset: ->
-    if @isRunning
-      @stop()
+    notify = not @isRunning
 
+    if @isRunning
+      @isRunning = false
+
+    # Reset the clock
     @counter.ticks = 0
+
+    if notify
+      @runningStatus.push(@isRunning)
 
 class Counter
   Number ticks = 0
