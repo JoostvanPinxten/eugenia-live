@@ -211,7 +211,7 @@ class Elements
 
 
 class NodeShape extends Spine.Model
-  @configure "NodeShape", "name", "properties", "label", "elements"
+  @configure "NodeShape", "name", "properties", "label", "elements", "behavior"
   @belongsTo 'palette', 'models/palette'
   
   constructor: (attributes) ->
