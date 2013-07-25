@@ -38,10 +38,35 @@ class RoundedRectangle extends BasicShape
     options.size.width or= 100
     options.size.height or= 100
     
-    options.position or= [0,0]
+    options.x or= 0
+    options.y or= 0
 
     options
-
+    
+  getOption: (content, node, defaultValue) ->
+    if (typeof content is 'string' or content instanceof String) and content.length and content[0] is "$"
+      
+      # What happens if there is a problem with the expression
+      # for example ${unknown} where unknown is not a property
+      # that is defined for this shape
+      
+      # strip off opening the ${ and the closing }
+      evalable = content.substring(2, content.length - 1)
+      content = node.getPropertyValue(evalable)
+    
+      # What happens if this fails?
+      if content is ""
+        defaultValue
+      else
+        # Eventually, we probably want to store type information
+        # for parameter values so that we can perform a more
+        # knowledgable conversion, rather than trial-and-error
+        value = parseInt(content,10)
+        value = content if isNaN(value)
+        value
+    else
+      content
+  
     ###
       The create method  looks for properties that it can use to set the 
       geometry of the shapes. It then matches text surrounded by ${ and } 
@@ -52,28 +77,20 @@ class RoundedRectangle extends BasicShape
       in the order of appearance of the properties in its shape
     ###
   create: (renderer, node, parent) =>
-    content = node.getPropertyValue("width")
-    if content
-      for property in node.getShape().properties
-        pattern = ///
-          \$\{
-         #{property}
-          \}
-        ///g
-        value = node.getPropertyValue(property)
-        content = content.replace(pattern, value)
-
-    width = parseInt(content,10)
-    width = @options.size.width if isNaN(width)
-    rect = new paper.Rectangle(0, 0, width, @options.size.height)
+    width = @getOption(@options.size.width, node, 100)
+    height = @getOption(@options.size.height, node, 100)
+    rect = new paper.Rectangle(0, 0, width, height)
 
     rounded = new paper.Path.RoundRectangle(rect, new paper.Size(@options.borderRadius, @options.borderRadius))
-    rounded.fillColor = if (@options.fillColor is "transparent") then null else @options.fillColor 
-    rounded.strokeColor = @options.borderColor
+    fillColor = @getOption(@options.fillColor, node, "transparent")
+    rounded.fillColor = if (fillColor is "transparent") then null else fillColor
+    rounded.strokeColor = @getOption(@options.borderColor, node, "black")
 
     renderer.linkElementToModel(rounded)
 
-    point = new paper.Point(node.position).add(@options.position)
+    x = @getOption(@options.x, node, 0)
+    y = @getOption(@options.y, node, 0)
+    point = new paper.Point(node.position).add([x, y])
     
     @parent.addChild(rounded)
 
