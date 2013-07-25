@@ -63,7 +63,7 @@ class RoundedRectangle extends BasicShape
         value = node.getPropertyValue(property)
         content = content.replace(pattern, value)
 
-    width = parseInt(node.getPropertyValue("width"),10)
+    width = parseInt(content,10)
     width = @options.size.width if isNaN(width)
     rect = new paper.Rectangle(0, 0, width, @options.size.height)
 
