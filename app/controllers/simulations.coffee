@@ -102,7 +102,6 @@ class SimulationControl extends Spine.Controller
     simulationPoll.start()
 
   startInteractive: (element) ->
-
     update = (currentTime, node) ->
       console.log('update')
       #console.log(node.getShape().behavior)
