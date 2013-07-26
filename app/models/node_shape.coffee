@@ -22,8 +22,8 @@ class BasicShape
     throw  "updateElement method not implemented for #{@constructor.name}"
 
 class RoundedRectangle extends BasicShape
-  constructor: (@parent, options) ->
-    super(options)
+  constructor: (parent, options) ->
+    super(parent, options)
     # overwrites the options set by super?
     @options = @setDefaultOptions(options)
 
