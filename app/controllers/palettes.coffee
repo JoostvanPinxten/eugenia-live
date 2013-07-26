@@ -99,9 +99,9 @@ class Define extends Spine.Controller
       matchBrackets: true
       mode: "application/#{@notation}"
       readOnly: true
-        
-    d = CodeMirror.fromTextArea(document.getElementById("definition"), definitionOptions)
-    e = CodeMirror.fromTextArea(document.getElementById("example"), exampleOptions)
+    
+    d = CodeMirror.fromTextArea($("#" + @verb() + " #definition")[0], definitionOptions)
+    e = CodeMirror.fromTextArea($("#" + @verb() + " #example")[0], exampleOptions)
     
     # The following is a workaround for broken CodeMirror editors on first load.
     # For some reason, the DOM is being manipulated after our code here. We should 
