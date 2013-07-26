@@ -15,12 +15,13 @@
         "es5-shimify", 
         "json2ify",
         "jqueryify", 
-        "spine",
+        "spine",    
         "spine/lib/local",
         "spine/lib/ajax",
         "spine/lib/route",
         "spine/lib/manager",
-        "spine/lib/relation"
+        "spine/lib/relation",
+        "baconjs"
       ],
       "paths"  : ["./app"],
       "target" : "./public/application.js",
