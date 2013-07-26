@@ -1,4 +1,4 @@
-<% if not $.isEmptyObject(@selection): %>
+<% unless $.isEmptyObject(@selection): %>
 <h2><%= @definition.displayName()%> properties</h2>
   <% if not $.isEmptyObject(@selection.propertyValues): %>
     <table class="table table-bordered">
@@ -24,4 +24,4 @@
   <% end %> 
 <% else: %>
   <p>Please select a single element to show its properties.</p>
-<% end %>   
+<% end %>

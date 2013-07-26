@@ -10,7 +10,6 @@
         </li>
       </ul>
     </legend>
-    <p>There may be a problem loading the text editors. For now, please just switch between JSON and EuGENia and back again to work around this.</p>
     <fieldset>
       <div class="row-fluid">
         <div class="span6" style="padding-left: 20px">
@@ -19,15 +18,14 @@
         </div>
         <div class="span6" style="padding-right: 20px">
           <p class="help-block">
-			<label>For example:</label>
-                    <textarea class="input-xlarge" style="width: 90%;" id="example" name="example" rows="12" required><%=@example%></textarea>
-
+			For example:
+			<pre><%=@example%></pre>
           </p>
         </div>
       </div>
       <div class="form-actions" style="padding-left: 20px;">
         <button type="submit" class="btn btn-primary"><%=@verb%> <%=@type%></button>
-	  <button id="cancel" class="btn">Cancel</button>
+		<button id="cancel" class="btn">Cancel</button>
 		<% if @verb is 'Update': %>
 		<button id="delete" class="btn btn-danger" style="float:right;">Delete <%=@type%></button>
 		<% end %>	
@@ -35,24 +33,3 @@
     </fieldset>
   </form>
 </div>
-
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("definition"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        mode: "application/<%= @notation %>",
-        gutters: ["CodeMirror-lint-markers"]<% if @notation.toLowerCase() is 'json': %>,
-        lint: true
-        <% end %>
-      });
-
-      var editor = CodeMirror.fromTextArea(document.getElementById("example"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        mode: "application/<%= @notation %>",
-        gutters: ["CodeMirror-lint-markers"],
-        readOnly : true
-      });
-
-
-    </script>

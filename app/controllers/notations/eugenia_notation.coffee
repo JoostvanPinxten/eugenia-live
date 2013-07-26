@@ -40,19 +40,19 @@ class EugeniaNotation
       
       if e.borderColor
         properties += ", " if properties
-        properties += "\n\tborder.color=\"#{@serialiseColor(e.borderColor)}\""
+        properties += "border.color=\"#{@serialiseColor(e.borderColor)}\""
       
       if e.fillColor
         properties += ", " if properties
-        properties += "\n\tcolor=\"#{@serialiseColor(e.fillColor)}\""
+        properties += "color=\"#{@serialiseColor(e.fillColor)}\""
       
       if e.figure
         properties += ", " if properties
-        properties += "\n\tfigure=\"#{e.figure}\""
+        properties += "figure=\"#{e.figure}\""
       
       if e.size and e.size.width and e.size.height
         properties += ", " if properties
-        properties += "\n\tsize=\"#{e.size.width},#{e.size.height}\""
+        properties += "size=\"#{e.size.width},#{e.size.height}\""
     
     
     if item.label
@@ -60,27 +60,27 @@ class EugeniaNotation
       
       if l.for
         properties += ", " if properties
-        properties += "\n\tlabel=\"#{l.for.join(",")}\""
+        properties += "label=\"#{l.for.join(",")}\""
         
       if l.pattern
         properties += ", " if properties
-        properties += "\n\tlabel.pattern=\"#{l.pattern}\""
+        properties += "label.pattern=\"#{l.pattern}\""
       
       if l.placement
         properties += ", " if properties
-        properties += "\n\tlabel.placement=\"#{l.placement}\""
+        properties += "label.placement=\"#{l.placement}\""
      
       if l.length
         properties += ", " if properties
-        properties += "\n\tlabel.length=\"#{l.length}\""
+        properties += "label.length=\"#{l.length}\""
       
       if l.color
         properties += ", " if properties
-        properties += "\n\tlabel.color=\"#{@serialiseColor(l.color)}\""
+        properties += "label.color=\"#{@serialiseColor(l.color)}\""
 
     else # there is no label
       properties += ", " if properties
-      properties += "\n\tlabel.placement=\"none\""
+      properties += "label.placement=\"none\""
       
     
     """

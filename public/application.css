@@ -1,3 +1,5 @@
+@import 'css/bootstrap.css';
+@import 'css/bootstrap-responsive.css';
 .stack > *:not(.active) {
   display: none;
 }
@@ -51,8 +53,4 @@ ol.instructions ol {
 }
 ol.instructions ol li {
   margin-top: 1em;
-}
-.CodeMirror {
-  border-bottom: 1px solid #000;
-  border-top: 1px solid #000;
 }

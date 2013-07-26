@@ -5,8 +5,6 @@
 # Issues
 * Refactor Eugenia notation and retest
 * Don't update properties view when link tool is active?
-* CodeMirror editor sometimes does not activate properly (only visually)
-* Changing views between 'update' and 'new' CodeMirror editors breaks the editors
 
 # Features
 
