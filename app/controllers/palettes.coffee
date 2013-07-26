@@ -45,6 +45,7 @@ class Define extends Spine.Controller
       type: @type
       notation: @notation
     @html require('views/palettes/define')(context)
+    @installCodeMirrors()
   
   serialise: (o) =>
     if @type is 'node'
@@ -82,7 +83,27 @@ class Define extends Spine.Controller
       name: "Link"
       color: "gray"
       style: "dash"
+  
+  installCodeMirrors: ->
+    definitionOptions =
+      lineNumbers: true
+      matchBrackets: true
+      mode: "application/#{@notation}"
     
+    if @notation is 'json'
+      definitionOptions['gutters'] = ["CodeMirror-lint-markers"]
+      definitionOptions['lint'] = true
+    
+    exampleOptions =
+      lineNumbers: true
+      matchBrackets: true
+      mode: "application/#{@notation}"
+      readOnly: true
+        
+    CodeMirror.fromTextArea(document.getElementById("definition"), definitionOptions)
+    CodeMirror.fromTextArea(document.getElementById("example"), exampleOptions)
+
+  
   define: (event) =>
     event.preventDefault()
     
