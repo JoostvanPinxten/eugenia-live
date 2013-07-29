@@ -1,5 +1,5 @@
 Spine = require('spine')
-Label = require('models/helpers/label')
+Label = require('views/drawings/shapes/label')
 
 class LinkShape extends Spine.Model
   @configure "LinkShape", "name", "properties", "color", "style", "label"
@@ -19,7 +19,7 @@ class LinkShape extends Spine.Model
   
   displayName: =>
     @name.charAt(0).toUpperCase() + @name.slice(1)
-    
+
 
   ###
     @arg renderer The linkRenderer containing the link to be renderer
@@ -29,7 +29,7 @@ class LinkShape extends Spine.Model
     #renderer.shapes[repr.id] = repr
     # now that we are certain that we have a representation, 
     # refresh it, so that it reflects the current value of its properties
-        
+    
     group = new paper.Group
     link = renderer.item
 

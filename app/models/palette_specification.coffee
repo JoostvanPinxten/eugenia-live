@@ -34,7 +34,7 @@ class StateMachinePaletteSpecification
           "elements": [
             {
               "figure": "ellipse",
-              "size": {"width": 10, "height": 10},
+              "size": {"width": 20, "height": 20},
               "fillColor": "black",
               "borderColor": "black"
             }
@@ -46,13 +46,13 @@ class StateMachinePaletteSpecification
           "elements": [
             {
               "figure": "ellipse",
-              "size": {"width": 10, "height": 10},
+              "size": {"width": 20, "height": 20},
               "fillColor": "white",
               "borderColor": "black"
             },
             {
               "figure": "ellipse",
-              "size": {"width": 7, "height": 7},
+              "size": {"width": 15, "height": 15},
               "fillColor": "black",
               "borderColor": "black"
             }
@@ -90,7 +90,7 @@ class ConcentrationPaletteSpecification
             "for": [
               "name"
             ],
-            "color": "black",
+            "color": "green",
             "placement": "internal",
             "length": 15,
             "pattern": "{0}"
@@ -205,7 +205,7 @@ class PetriNetPaletteSpecification
           "elements": [
             {
               "figure": "ellipse",
-              "size": {"width": 30, "height": 30},
+              "size": {"width": 60, "height": 60},
               "fillColor": "white",
               "borderColor": "black"
             }
@@ -264,7 +264,7 @@ class PhysicalSystemPaletteSpecification
             },
             {
               "figure": "ellipse",
-              "size": {"width": 5, "height": 5},
+              "size": {"width": 10, "height": 10},
               "fillColor": "red",
               "borderColor": "black"
             }
@@ -276,7 +276,7 @@ class PhysicalSystemPaletteSpecification
           "elements": [
             {
               "figure": "path",
-              "fillColor": "none",
+              "fillColor": "transparent",
               "borderColor": "black",
               "points" : [
                 {"x":0, "y":0},
@@ -339,6 +339,8 @@ class PaletteSpecification extends Spine.Model
     if data.linkShapes
       for lsData in data.linkShapes
         p.linkShapes().create(lsData).save()
+
+    p.name = data.name
     
     p
      
