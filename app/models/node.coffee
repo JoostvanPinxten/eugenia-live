@@ -17,19 +17,40 @@ class Node extends Spine.Model
     #simulationPoll.currentTime.onValue (tick) =>
       #@simulate(tick)
 
-
   initialisePropertyValues: ->
-    @propertyValues or= @getShape().defaultPropertyValues() if @getShape()
     @propertyValues or= {}
+    @updatePropertyValuesWithDefaultsFromShape()
+        
+  getAllProperties: ->
+    @updatePropertyValuesWithDefaultsFromShape()
+    @propertyValues
   
+  updatePropertyValuesWithDefaultsFromShape: ->
+    for property,value of @defaultPropertyValues()
+      # insert the default value unless there is already a value for this property
+      @setPropertyValue(property,value) unless property of @propertyValues
+    
+    for property,value of @propertyValues
+      # remove the current value unless this property is currently defined for this shape
+      @removePropertyValue(property) unless property of @defaultPropertyValues()
+
+  defaultPropertyValues: ->
+    if @getShape() then @getShape().defaultPropertyValues() else {}
+
   setPropertyValue: (property, value) ->
     # We could check the shape first, to see if it has a slot/property with such a name!
     @propertyValues[property] = value
     @trigger("propertyUpdate")
     @save()
   
+  removePropertyValue: (property) ->
+    delete @propertyValues[property]
+    @trigger("propertyRemove")
+    @save()
+  
   getPropertyValue: (property) ->
     @propertyValues[property]
+    
     
   links: =>
     Link.select (link) => (link.sourceId is @id) or (link.targetId is @id)
@@ -51,7 +72,6 @@ class Node extends Spine.Model
     path
   
   select: (layer) =>
-
     layer.children[@paperId()].selected = true
     @trigger('selected')
 
