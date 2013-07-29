@@ -1,5 +1,5 @@
 Spine = require('spine')
-
+redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 # FIXME: are these properly cleaned up? Could be the case that there is still some reference floating around somewhere?
 class ElementRenderer  
@@ -21,7 +21,7 @@ class ElementRenderer
     #if old_el
     #  @el.selected = old_el.selected
     #  old_el.remove()
-    paper.view.draw()
+    redrawCoordinator.requestRedraw()
   
   linkElementToModel: (e) =>
     e.model = @item
@@ -44,9 +44,11 @@ class ElementRenderer
     # move the element to it's new position, without re-rendering the whole bunch
     @item.nodeShape().refresh(@)
 
+  # Moves a Paper element to the back by inserting it as a toplevel child
   sendToBack: =>
     paper.project.activeLayer.insertChild(0, @el)
-
+  
+  # Moves a Paper element to the top by adding it as a toplevel child
   bringToFront: =>
     paper.project.activeLayer.addChild(@el)    
     
