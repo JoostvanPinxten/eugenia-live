@@ -7,10 +7,15 @@ class LinkShape extends Spine.Model
   
   constructor: (attributes) ->
     super
+    @properties or= []
     @createDelegates()
     @bind("update", @createDelegates)    
     @bind("destroy", @destroyLinks)
 
+  defaultPropertyValues: =>
+    defaults = {}
+    defaults[property] = "" for property in @properties
+    defaults
   
   displayName: =>
     @name.charAt(0).toUpperCase() + @name.slice(1)

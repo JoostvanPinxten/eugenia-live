@@ -1,6 +1,6 @@
 <% unless $.isEmptyObject(@selection): %>
 <h2><%= @definition.displayName()%> properties</h2>
-  <% if not $.isEmptyObject(@selection.getAllProperties()): %>
+  <% unless $.isEmptyObject(@selection.getAllProperties()): %>
     <table class="table table-bordered">
     <thead>
       <tr>
