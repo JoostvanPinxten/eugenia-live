@@ -16,35 +16,39 @@ class Link extends Spine.Model
     @initialisePropertyValues()
 
   initialisePropertyValues: ->
+    # Don't call save() during initialisation, as this causes
+    # duplicate Spine records to be created.
     @propertyValues or= {}
-    @updatePropertyValuesWithDefaultsFromShape()
+    @updatePropertyValuesWithDefaultsFromShape(false)
         
   getAllProperties: ->
-    @updatePropertyValuesWithDefaultsFromShape()
+    @updatePropertyValuesWithDefaultsFromShape(true)
     @propertyValues
   
-  updatePropertyValuesWithDefaultsFromShape: ->
+  updatePropertyValuesWithDefaultsFromShape: (persist) ->
     for property,value of @defaultPropertyValues()
       # insert the default value unless there is already a value for this property
-      @setPropertyValue(property,value) unless property of @propertyValues
+      @setPropertyValue(property,value,false) unless property of @propertyValues
     
     for property,value of @propertyValues
       # remove the current value unless this property is currently defined for this shape
-      @removePropertyValue(property) unless property of @defaultPropertyValues()
+      @removePropertyValue(property,false) unless property of @defaultPropertyValues()
+    
+    @save() if persist
 
   defaultPropertyValues: ->
     if @getShape() then @getShape().defaultPropertyValues() else {}
 
-  setPropertyValue: (property, value) ->
+  setPropertyValue: (property, value, persist = true) ->
     # We could check the shape first, to see if it has a slot/property with such a name!
     @propertyValues[property] = value
     @trigger("propertyUpdate")
-    @save()
+    @save() if persist
   
-  removePropertyValue: (property) ->
+  removePropertyValue: (property, persist = true) ->
     delete @propertyValues[property]
     @trigger("propertyRemove")
-    @save()
+    @save() if persist
   
   getPropertyValue: (property) ->
     @propertyValues[property]
