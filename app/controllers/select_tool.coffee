@@ -5,18 +5,18 @@ MoveNode = require('models/commands/move_node')
 class SelectTool extends Tool
   parameters: {}
   
-  onMouseDown: (event) ->
+  onMouseDown: (event) =>
     @clearSelection()
     @select(@hitTester.nodeOrLinkAt(event.point))
     @current = event.point
     @start = event.point
       
-  onMouseDrag: (event) ->
+  onMouseDrag: (event) =>
     for item in @selection() when item instanceof Node
       @run(new MoveNode(item, event.point.subtract(@current)), undoable: false)
       @current = event.point
   
-  onMouseUp: (event) ->
+  onMouseUp: (event) =>
     for item in @selection() when item instanceof Node
       @commander.add(new MoveNode(item, event.point.subtract(@start)))
   
