@@ -49,5 +49,9 @@ class PolygonShape extends BasicShape
     polygon.position = point
     @changeElementTo(polygon)
     # reconnect links? geometry may have changed?
-
+  
+  updateElement: (node, renderer) ->
+    fillColor = @getOption(@options.fillColor, node, "transparent")
+    @current.fillColor = if (fillColor is "transparent") then null else fillColor
+    @current.strokeColor = @getOption(@options.borderColor, node, "black")
 module.exports = PolygonShape

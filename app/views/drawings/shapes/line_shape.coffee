@@ -53,4 +53,8 @@ class LineShape extends BasicShape
     @changeElementTo(line)
     # reconnect links? geometry may have changed?
 
+  updateElement: (node, renderer) ->
+    fillColor = @getOption(@options.fillColor, node, "transparent")
+    @current.strokeColor = @getOption(@options.strokeColor, node, "black")
+
 module.exports = LineShape

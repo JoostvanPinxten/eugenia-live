@@ -34,12 +34,7 @@ class Ellipse extends BasicShape
     width = @getOption(@options.size.width, node, 50)
     height = @getOption(@options.size.height, node, 100)
 
-    ellipse = new paper.Path.Ellipse({size:[width, height]})
-
-    # factor out to something like: apply style?
-    fillColor = @getOption(@options.fillColor, node, "transparent")
-    ellipse.fillColor = if (fillColor is "transparent") then null else fillColor
-    ellipse.strokeColor = @getOption(@options.borderColor, node, "black")
+    ellipse = new paper.Path.Oval({size:[width, height]})
 
     renderer.linkElementToModel(ellipse)
 
@@ -57,5 +52,8 @@ class Ellipse extends BasicShape
 
 # node argument is redundant
   updateElement: (node, renderer) ->
+    fillColor = @getOption(@options.fillColor, node, "transparent")
+    @current.fillColor = if (fillColor is "transparent") then null else fillColor
+    @current.strokeColor = @getOption(@options.borderColor, node, "black")
     
 module.exports = Ellipse

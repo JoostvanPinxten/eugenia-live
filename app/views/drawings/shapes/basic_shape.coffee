@@ -13,6 +13,7 @@ class BasicShape
     # TODO: only update the 'style' or position in case there is a relevant change (e.g. property has changed on which a def depends)
     Bacon.fromEventTarget(node, "propertyUpdate").onValue(@create, renderer) 
     @create(renderer, node, @parent)
+    @updateElement(renderer, node)
 
   # node argument is redundant
   create : (node, renderer) ->

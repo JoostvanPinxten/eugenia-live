@@ -8,6 +8,8 @@ class Label
     else
       @definition = { placement: "none" }
 
+    @definition.color or="red"
+
   default_pattern: ->
     numbers = [0..@definition.for.length-1]
     formattedNumbers = ("{#{n}}" for n in numbers)
@@ -37,7 +39,7 @@ class Label
       offset = @definition.offset or [0,20]
       shape.bounds.bottomCenter.add(offset) # nudge outside shape
     else
-      offset = @definition.offset or [0,5]
+      offset = @definition.offset or [0,0]
       shape.position.add(offset) # nudge down to middle of shape
 
   updateText: (textItem, node, shape) ->

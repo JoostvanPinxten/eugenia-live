@@ -36,16 +36,19 @@ class LinkShape extends Spine.Model
     path = new paper.Path(link.toSegments())
     group.addChild(path)
     label = @_label.draw(renderer, group, path)
+    renderer.item.bind "propertyUpdate", (node)=>
+      console.log(label, path, label.parent == path.parent)
+      @_label.updateText(renderer.representation[@_label], renderer.item, path) 
     group.addChild(label)
 
     path.strokeColor = @color
     path.dashArray = [4, 4] if @style is "dash"
 
-    @refresh(renderer)
-
     # might also do the registration based on a manually triggered event
     renderer.representation[this] = path
     group.addChild(path)
+    @refresh(renderer)
+
     group
   
   destroyLinks: ->
@@ -60,10 +63,20 @@ class LinkShape extends Spine.Model
     defaults
 
   refresh: (renderer) ->
-    for element in Object.keys(renderer.representation)
+    ###    for element in Object.keys(renderer.representation)
       @refreshOne(renderer, element, renderer.representation[element])
+
+  refresh: (renderer) ->
+    # console.log "refresh", renderer
+    # can now be done based on the names of the paperId?!
+    ###
+    shape = renderer.representation[this]
+    #console.error 'here'
+    #@_elements.refresh(renderer, @_elements, shape)
+    @_label.updateText(renderer.representation[@_label], renderer.item, shape)
+
   ###
-    @arg representation THe current representation of a link
+    @arg representation The current representation of a link
   ###
   refreshOne: (representation) ->
 

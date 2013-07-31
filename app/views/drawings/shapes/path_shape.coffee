@@ -55,4 +55,10 @@ class PathShape extends BasicShape
     @changeElementTo(path)
     # reconnect links? geometry may have changed?
 
+# node argument is redundant
+  updateElement: (node, renderer) ->
+    fillColor = @getOption(@options.fillColor, node, "transparent")
+    @current.fillColor = if (fillColor is "transparent") then null else fillColor
+    @current.strokeColor = @getOption(@options.borderColor, node, "black")
+    
 module.exports = PathShape
