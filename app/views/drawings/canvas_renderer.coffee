@@ -1,6 +1,7 @@
 Link = require('models/link')
 Node = require('models/node')
 Bacon = require('baconjs/dist/Bacon')
+redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 class CanvasRenderer
   constructor: (options) ->
@@ -11,6 +12,8 @@ class CanvasRenderer
     @bindToChangeEvents()
     @addAll(Node)
     @addAll(Link)
+    redrawCoordinator.bind "rendered", @saveDrawingCache
+
     ###
     @grid = new paper.Group
 
@@ -45,7 +48,7 @@ class CanvasRenderer
     elements = @drawing[associationMethod]().all()         #e.g. @drawing.nodes().all()
     #console.log("adding all " + elements.length + " " + type.className + "s")
     @addOne(element) for element in elements
-    @updateDrawingCache()
+    @drawingCacheInvalid = true
   
   addOne: (element) =>
     # Set-up a renderer, then trigger 'updates' and 'destroys' on the item
@@ -60,7 +63,7 @@ class CanvasRenderer
     #element.bind("propertyUpdate", (el) -> element.trigger("render"))
     #stream = Bacon.fromEventTarget(element, "update")
     #stream.onValue (element) -> console.log(element.getPropertyValue("name"))
-    @updateDrawingCache()
+    @drawingCacheInvalid =true
   
   renderOne: (element) =>
     element.trigger("render")
@@ -73,8 +76,10 @@ class CanvasRenderer
       console.warn("no renderer attached for " + element)
       ###
   
-  updateDrawingCache: =>
-    @drawing.cache = @canvas.toDataURL()
-    @drawing.save()
+  saveDrawingCache: =>
+    if @drawingCacheInvalid
+      @drawing.cache = @canvas.toDataURL()
+      @drawing.save()
+      @drawingCacheInvalid = false
     
 module.exports = CanvasRenderer
