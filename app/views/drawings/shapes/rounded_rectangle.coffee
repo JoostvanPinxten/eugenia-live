@@ -38,26 +38,27 @@ class RoundedRectangle extends BasicShape
     rect = new paper.Rectangle(0, 0, width, height)
 
     rounded = new paper.Path.RoundRectangle(rect, new paper.Size(@options.borderRadius, @options.borderRadius))
-    fillColor = @getOption(@options.fillColor, node, "transparent")
-    rounded.fillColor = if (fillColor is "transparent") then null else fillColor
-    rounded.strokeColor = @getOption(@options.borderColor, node, "black")
-
+    rounded.position = new paper.Point(10,10)
     renderer.linkElementToModel(rounded)
 
-    x = @getOption(@options.x, node, 0)
-    y = @getOption(@options.y, node, 0)
-    point = new paper.Point(node.position).add([x, y])
-    
     @parent.addChild(rounded)
-
-    rounded.position = point
     
     @changeElementTo(rounded)
     # reconnect links? geometry may have changed?
+    @updateElement(renderer, node)
 
 # node argument is redundant
-  updateElement: (node, renderer) ->
+  updateElement: (renderer, node) ->
     fillColor = @getOption(@options.fillColor, node, "transparent")
     @current.fillColor = if (fillColor is "transparent") then null else fillColor
     @current.strokeColor = @getOption(@options.borderColor, node, "black")
+    @current.strokeWidth = @getOption(@options.borderWidth, node, 1) if @options.borderWidth
+
+    x = @getOption(@options.x, node, 0)
+    y = @getOption(@options.y, node, 0)
+#    console.log(node, renderer)
+    #console.log('updateEl', node.paperId(), node.position)
+    @current.position = new paper.Point(node.position).add([x, y])
+
+
 module.exports = RoundedRectangle

@@ -34,26 +34,24 @@ class Ellipse extends BasicShape
     width = @getOption(@options.size.width, node, 50)
     height = @getOption(@options.size.height, node, 100)
 
-    ellipse = new paper.Path.Oval({size:[width, height]})
-
+    ellipse = new paper.Path.Ellipse({point: [0,0], size:[width, height]})
     renderer.linkElementToModel(ellipse)
-
-    # perhaps move all this to changeElementTo? Seems to be generic for all shapes
-    x = @getOption(@options.x, node, 0)
-    y = @getOption(@options.y, node, 0)
-    point = new paper.Point(node.position).add([x, y])
     
     @parent.addChild(ellipse)
 
-    ellipse.position = point
-
     @changeElementTo(ellipse)
+    @updateElement(renderer, node)
+
     # reconnect links? geometry may have changed?
 
 # node argument is redundant
-  updateElement: (node, renderer) ->
+  updateElement: (renderer, node) ->
     fillColor = @getOption(@options.fillColor, node, "transparent")
     @current.fillColor = if (fillColor is "transparent") then null else fillColor
     @current.strokeColor = @getOption(@options.borderColor, node, "black")
-    
+    x = @getOption(@options.x, node, 0)
+    y = @getOption(@options.y, node, 0)
+    point = new paper.Point(node.position).add([x, y])
+    @current.position = point
+
 module.exports = Ellipse

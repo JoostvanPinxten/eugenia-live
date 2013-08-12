@@ -37,20 +37,23 @@ class PolygonShape extends BasicShape
     fillColor = @getOption(@options.fillColor, node, "transparent")
     polygon.fillColor = if (fillColor is "transparent") then null else fillColor
     polygon.strokeColor = @getOption(@options.borderColor, node, "black")
+    path.strokeWidth = @getOption(@options.borderWidth, node, 1) if @options.borderWidth
 
     renderer.linkElementToModel(polygon)
 
-    # perhaps move all this to changeElementTo? Seems to be generic for all shapes
+    
+    @parent.addChild(polygon)
+    @changeElementTo(polygon)
+    # reconnect links? geometry may have changed?
+    @updateElement(renderer, node)
+
+  
+  updateElement: (renderer, node) ->
     x = @getOption(@options.x, node, 0)
     y = @getOption(@options.y, node, 0)
     point = new paper.Point(node.position).add([x, y])
-    
-    @parent.addChild(polygon)
-    polygon.position = point
-    @changeElementTo(polygon)
-    # reconnect links? geometry may have changed?
-  
-  updateElement: (node, renderer) ->
+    @current.position = point
+
     fillColor = @getOption(@options.fillColor, node, "transparent")
     @current.fillColor = if (fillColor is "transparent") then null else fillColor
     @current.strokeColor = @getOption(@options.borderColor, node, "black")

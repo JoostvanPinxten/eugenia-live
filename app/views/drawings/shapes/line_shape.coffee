@@ -36,24 +36,21 @@ class LineShape extends BasicShape
 
     line = new paper.Path.Line(new paper.Point(0, 0), new paper.Point(@getOption(@options.size.width, @options.size.height)))
 
-    # factor out to something like: apply style?
-    fillColor = @getOption(@options.fillColor, node, "transparent")
-    line.fillColor = if (fillColor is "transparent") then null else fillColor
-    line.strokeColor = @getOption(@options.borderColor, node, "black")
 
     renderer.linkElementToModel(line)
 
-    # perhaps move all this to changeElementTo? Seems to be generic for all shapes
+    
+    @parent.addChild(line)
+    @changeElementTo(line)
+    @updateElement(renderer, node)
+    
+    # reconnect links? geometry may have changed?
+
+  updateElement: (renderer, node) ->
     x = @getOption(@options.x, node, 0)
     y = @getOption(@options.y, node, 0)
     point = new paper.Point(node.position).add([x, y])
-    
-    @parent.addChild(line)
-    line.position = point
-    @changeElementTo(line)
-    # reconnect links? geometry may have changed?
-
-  updateElement: (node, renderer) ->
+    @current.position = point
     fillColor = @getOption(@options.fillColor, node, "transparent")
     @current.strokeColor = @getOption(@options.strokeColor, node, "black")
 
