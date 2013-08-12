@@ -75,8 +75,7 @@ class Link extends Spine.Model
     "link" + @id
       
   toPath: (renderer) =>
-    s = LinkShape.find(@shape)
-    group = s.draw(renderer)
+    group = @getShape().draw(renderer)
 
     path = group.firstChild
     group.name = @paperId()
@@ -102,6 +101,19 @@ class Link extends Spine.Model
 
   getShape: =>
     @linkShape()
+
+  source: =>
+    # Spine cannot circularly require Node for some reason,
+    # so we require it dynamically here
+    Node = require('models/node')
+    Node.find(@sourceId)
+
+
+  target: =>
+    # Spine cannot circularly require Node for some reason
+    # so we require it dynamically here
+    Node = require('models/node')
+    Node.find(@targetId)
 
     
 module.exports = Link
