@@ -10,6 +10,7 @@ ElementOverview = require('controllers/element_overview')
 #Simulation = require('controllers/simulation')
 Commander = require ('models/commands/commander')
 
+redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 class Index extends Spine.Controller
   events:
@@ -45,7 +46,7 @@ class Index extends Spine.Controller
     button = @$(event.currentTarget)
     id = button.data('id')
     drawing = Drawing.find(id)
-    if confirm("Are you sure you want delete drawing '#{drawing.name}'?")
+    if confirm("Are you sure you want to delete drawing '#{drawing.name}'?")
       Drawing.destroy(id)
       @render()
 
@@ -57,7 +58,9 @@ class Index extends Spine.Controller
 
 class Show extends Spine.Controller
   events:
-    'click [data-mode]' : 'changeMode'      
+    'click [data-mode]' : 'changeMode'
+    'click button#showPaper' : 'showPaper'
+    'click button#refresh' : 'refresh'
 
   constructor: ->
     super
@@ -90,7 +93,7 @@ class Show extends Spine.Controller
   changeMode: (event) =>
     event.preventDefault()
     @mode = $(event.target).data('mode')
-    if @mode is 'simulate'    
+    if @mode is 'simulate'
       # this is actually not the responsibility of the drawing? 
       # but it's the only place that has access to the toolbox
 
@@ -99,6 +102,23 @@ class Show extends Spine.Controller
 
       @navigate('/simulate', @item.id)
 
+  showPaper: (event) =>
+    
+    console.group('paper')
+    console.log(paper.view)
+    @showSubPaper paper.project.layers, 1
+    console.groupEnd('paper')
+
+  showSubPaper: (el, depth) ->
+    if el instanceof Array
+      @showSubPaper(item, depth) for item in el
+    else 
+      console.group("" + el.name + "/" + depth)
+      console.log(el)
+      @showSubPaper(el.children, depth + 1) if el.children
+      console.groupEnd("" + el.name + "/" + depth)
+  refresh: () ->
+    redrawCoordinator.requestRedraw()
 
 class Drawings extends Spine.SubStack
   controllers:
