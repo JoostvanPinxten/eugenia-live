@@ -201,7 +201,8 @@ class PetriNetPaletteSpecification
       "name": "Petri net",
       "nodeShapes": [
         {
-          "name": "Net",
+          "name": "Net", "properties" : ["tokens"],
+          "label" : {"for": "tokens"},
           "elements": [
             {
               "figure": "ellipse",
@@ -220,12 +221,26 @@ class PetriNetPaletteSpecification
               "fillColor": "black",
               "borderColor": "black"
             }
-          ]
+          ],
+          "behavior": {
+            "tick[true]": [
+              "trigger(self, \'increment\')"
+            ],
+            "increment": [
+              "tokens+=1"
+            ]
+          }
         }
       ],
       "linkShapes": [
         {
-          "name": "Transition",
+          "name": "Transition", "properties" : ["rate"],
+          "label": {
+            "for": [
+              "rate"
+            ],
+            "placement": "external"
+          },
           "color": "black",
           "style": "solid"
         }

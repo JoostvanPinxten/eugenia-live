@@ -1,12 +1,12 @@
 Spine = require('spine')
 
 class Palette extends Spine.Model
-  @configure 'Palette'
+  @configure 'Palette', 'name'
   @hasMany 'nodeShapes', 'models/node_shape'
   @hasMany 'linkShapes', 'models/link_shape'
   @belongsTo 'drawing', 'models/drawing'
 
-  String name = "<no name specified>"
+  String @name = "<no name specified>"
   
   constructor: ->
     super
