@@ -2,7 +2,7 @@ Spine = require('spine')
 Label = require('views/drawings/shapes/label')
 
 class LinkShape extends Spine.Model
-  @configure "LinkShape", "name", "properties", "color", "style", "label"
+  @configure "LinkShape", "name", "properties", "color", "style", "label","width", "representation", "behavior"
   @belongsTo 'palette', 'models/palette'
   
   constructor: (attributes) ->
@@ -20,7 +20,6 @@ class LinkShape extends Spine.Model
   displayName: =>
     @name.charAt(0).toUpperCase() + @name.slice(1)
 
-
   ###
     @arg renderer The linkRenderer containing the link to be renderer
   ###
@@ -34,14 +33,34 @@ class LinkShape extends Spine.Model
     link = renderer.item
 
     path = new paper.Path(link.toSegments())
+    
+    ###
+      Absolute rotation is problematic in Paper.js as I cannot find the right 
+      property to inspect the current rotation; so this kludge allows us to 
+      use the element and create a clone that is rotated with respect to the 
+      original orientation.
+
+      Watch https://groups.google.com/forum/#!topic/paperjs/R3O0peJPFc0 
+      where this problem is discussed
+    ###
+
+    middle = new paper.Path([new paper.Point(15, -7), new paper.Point(0, 0), new paper.Point(15, 7)]);
+    middle.strokeColor = "red"
+    middle.name = "middle"
+    middle.visible = false
+    renderer.representation["middle"] = middle
+    group.addChild(middle)
     group.addChild(path)
     label = @_label.draw(renderer, group, path)
     renderer.item.bind "propertyUpdate", (node)=>
-      console.log(label, path, label.parent == path.parent)
+      #console.log(label, path, label.parent == path.parent)
       @_label.updateText(renderer.representation[@_label], renderer.item, path) 
     group.addChild(label)
-
+    @color or= "black"
     path.strokeColor = @color
+    @width or= 1
+    path.strokeWidth = @width
+
     path.dashArray = [4, 4] if @style is "dash"
 
     # might also do the registration based on a manually triggered event
@@ -70,10 +89,38 @@ class LinkShape extends Spine.Model
     # console.log "refresh", renderer
     # can now be done based on the names of the paperId?!
     ###
-    shape = renderer.representation[this]
+    path = renderer.representation[this]
     #console.error 'here'
     #@_elements.refresh(renderer, @_elements, shape)
-    @_label.updateText(renderer.representation[@_label], renderer.item, shape)
+    @_label.updateText(renderer.representation[@_label], renderer.item, path)
+
+
+    ###
+      Position the middle elements at the middle of the line;
+      * first rotate them in the direction of the tangent (direction from source to target)
+      * then translate them according to the tangent's point and the elements' specified offset
+      
+      The rotation assumes that the representation is oriented to the left and should be rotated around the left-middle edge
+    ###
+
+    # position the middle element at the middle of the line
+    middlePoint= path.getPointAt(path.length / 2)
+    middleTangent= path.getTangentAt(path.length / 2)
+    middleAngle = middleTangent.angle
+    middle = renderer.representation["middle"]
+    
+    if renderer.representation["middleClone"]
+      clone = renderer.representation["middleClone"]
+      clone.remove()
+    clone = middle.clone()
+
+    # TODO This is not yet the right way to rotate around the left-center?
+    clone.rotate(180+middleAngle, clone.bounds.leftCenter)
+    clone.visible = true
+    clone.position = middlePoint
+    renderer.representation["middleClone"] = clone
+
+    middle.position = middleTangent
 
   ###
     @arg representation The current representation of a link
