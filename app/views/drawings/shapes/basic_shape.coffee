@@ -28,53 +28,10 @@ class BasicShape
     
   getOption: (content, node, defaultValue) ->
     if (typeof content is 'string' or content instanceof String) and content.length and content[0] is "$"
-      # What happens if there is a problem with the expression
-      # for example ${unknown} where unknown is not a property
-      # that is defined for this shape
-      
-      # strip off opening the ${ and the closing }
+      ExpressionEvaluator = require('models/helper/expression_evaluator')
+      evaluator = new ExpressionEvaluator
 
-      pattern = ///
-        \$\{
-        ([\w]+)
-        \}
-      ///g
-      #props = node.getAllProperties(false) # this will always trigger a save()
-
-      evalable = content.replace(pattern, (match, propertyName) ->
-        result = match
-        result = "node.getPropertyValue(\'#{propertyName}\', false)" #if propertyName in Object.keys(props)
-        result
-      )
-      ###content = node.getPropertyValue(evalable)
-    
-      # What happens if this fails?
-      if content is ""
-        defaultValue
-      else
-        # Eventually, we probably want to store type information
-        # for parameter values so that we can perform a more
-        # knowledgable conversion, rather than trial-and-error
-        value = parseInt(content,10)
-        value = content if isNaN(value)
-        value
-    else
-      content    ###
-      try
-        val = eval(evalable)
-        if val is undefined or val is"" then return defaultValue
-        number = parseInt(val, 10) 
-
-        # Eventually, we probably want to store type information
-        # for parameter values so that we can perform a more
-        # knowledgable conversion, rather than trial-and-error
-        return if isNaN(number) then val else number
-      catch e
-        # ...
-        console.error('Exception occurred while evaluating property', content, evalable, e)
-      
-      
-      #content
+      evaluator.evaluate(node, content)
     else
       content
 
