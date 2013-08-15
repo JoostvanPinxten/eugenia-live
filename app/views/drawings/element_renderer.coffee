@@ -4,7 +4,7 @@ redrawCoordinator = require('views/drawings/redraw_coordinator')
 # FIXME: are these properly cleaned up? Could be the case that there is still some reference floating around somewhere?
 class ElementRenderer  
   constructor: (@item) ->
-    @item.bind("update", @refresh)
+    @item.bind("update", @render)
     @item.bind("render", @render)
     @item.bind("destroy", @remove)
     @item.bind("selected", @bringToFront)
@@ -13,14 +13,10 @@ class ElementRenderer
     @representation = []
 
   render: =>
-    #console.log 'rendering element', @item
-    #old_el = @el
+#    console.error 'rendering element', @item.paperId()
     @draw()
     @linkElementToModel(@el)
     
-    #if old_el
-    #  @el.selected = old_el.selected
-    #  old_el.remove()
     redrawCoordinator.requestRedraw()
   
   linkElementToModel: (e) =>
@@ -45,11 +41,18 @@ class ElementRenderer
     @item.nodeShape().refresh(@)
 
   # Moves a Paper element to the back by inserting it as a toplevel child
-  sendToBack: =>
-    paper.project.activeLayer.insertChild(0, @el)
+  sendToBack: (deep = true)=>
+    if deep
+      paper.project.activeLayer.insertChild(0, @el)
+    else
+      @el.parent.insertChild(0, @el)
   
   # Moves a Paper element to the top by adding it as a toplevel child
-  bringToFront: =>
-    paper.project.activeLayer.addChild(@el)    
+  bringToFront: (deep) =>
+    #console.log('bring to front', @el.parent)
+    if deep
+      paper.project.activeLayer.addChild(@el)
+    else
+      @el.parent.insertChild(0, @el)
     
 module.exports = ElementRenderer
