@@ -3,11 +3,43 @@ require = window.require
 describe 'DeleteLink', ->
   DeleteLink = require('models/commands/delete_link')
   Drawing = require('models/drawing')
+  PaletteSpecification = require('models/palette_specification')
 
   beforeEach ->
+    @palette = PaletteSpecification.create(json: '{
+      "nodeShapes" : [
+        {
+          "name" : "Singleton",
+          "elements" : [
+            {
+              "figure" : "rounded",
+              "size" : { "width" : 100, "height" : 50 }
+            }
+          ]
+        },
+        {
+          "name" : "multi",
+          "elements" : [
+            {
+              "figure": "ellipse"
+            },
+            {
+              "figure": "square"
+            }
+          ]
+        }
+      ],
+      "linkShapes" : [
+        {
+          "name": "transition",
+          "color": "black"
+        }
+      ]
+    }').instantiate()
+        
     @drawing = new Drawing()
     @parameters =
-      shape: "Transition"
+      shape: @palette.linkShapes().all()[0].id
       sourceId: "c1"
       targetId: "c2"
       segments:

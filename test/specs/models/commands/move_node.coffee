@@ -11,7 +11,6 @@ describe 'MoveNode', ->
     @node = new Node(position: @position)
     @command = new MoveNode(@node, @offset)
 
-
   it 'moves the node when executed', ->
     @command.run()
     expect(@node.position.x).toBe(@position.x + @offset.x)
