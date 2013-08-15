@@ -10,7 +10,7 @@ class RoundedRectangle extends BasicShape
     options or= {}
     options.borderRadius or= 0 # default to a normal rectangle
     
-    options.strokeColor or= "black"
+    options.borderColor or= "black"
     options.fillColor or= "white"
     
     options.size or= {}

@@ -9,7 +9,7 @@ class PolygonShape extends BasicShape
   setDefaultOptions: (options) ->
     options or= {}
     
-    options.strokeColor or= "black"
+    options.borderColor or= "black"
     options.fillColor or= "white"
     
     options.sides or= 5

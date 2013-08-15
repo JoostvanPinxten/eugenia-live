@@ -8,7 +8,7 @@ class Label
     else
       @definition = { placement: "none" }
 
-    @definition.color or="red"
+    @definition.color or="black"
 
   default_pattern: ->
     numbers = [0..@definition.for.length-1]
