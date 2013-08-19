@@ -15,7 +15,7 @@ class LinkRenderer extends ElementRenderer
     # FIXME trim the line in the tool
     # rather than hiding the overlap behind the nodes here
 
-    # TODO the above FIXME will also enable us to create symbols for start/end points
+    # TODO the above FIXME will also enable us to create symbols for start/end points; we may be able to use the intersection example to determine where the link should start on the node?
     @refresh()
 
   refresh: =>
@@ -23,9 +23,10 @@ class LinkRenderer extends ElementRenderer
     @sendToBack()
     
   reconnect: (link, node) =>
+    # See the above fixme?
     newPos = node.position
     # TODO: fix paper references (on id iso first/lastChild)
-    path = @representation[link.getShape()]
+    path = @representation[link.getShape().id]
 
     if node.id is link.sourceId
       path.firstSegment.point.x = newPos.x 

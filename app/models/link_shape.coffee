@@ -7,6 +7,10 @@ class LinkShape extends Spine.Model
   
   constructor: (attributes) ->
     super
+
+    ExpressionEvaluator = require('models/helper/expression_evaluator')
+    @evaluator = new ExpressionEvaluator
+
     @properties or= []
     @createDelegates()
     @bind("update", @createDelegates)    
@@ -33,6 +37,7 @@ class LinkShape extends Spine.Model
     link = renderer.item
 
     path = new paper.Path(link.toSegments())
+    renderer.representation[@id] = path
     
     ###
       Absolute rotation is problematic in Paper.js as I cannot find the right 
@@ -57,14 +62,12 @@ class LinkShape extends Spine.Model
       @_label.updateText(renderer.representation[@_label], renderer.item, path) 
     group.addChild(label)
     @color or= "black"
-    path.strokeColor = @color
-    @width or= 1
-    path.strokeWidth = @width
 
     path.dashArray = [4, 4] if @style is "dash"
 
     # might also do the registration based on a manually triggered event
-    renderer.representation[this] = path
+    
+    #console.log(renderer.representation)
     group.addChild(path)
     @refresh(renderer)
 
@@ -89,12 +92,20 @@ class LinkShape extends Spine.Model
     # console.log "refresh", renderer
     # can now be done based on the names of the paperId?!
     ###
-    path = renderer.representation[this]
+    path = renderer.representation[@id]
+
+    throw new Error("Incorrect program state; unable to reference path for link") unless path
     #console.error 'here'
     #@_elements.refresh(renderer, @_elements, shape)
     @_label.updateText(renderer.representation[@_label], renderer.item, path)
 
+    if @color.indexOf('$')>= 0
+      path.strokeColor = @evaluator.evaluate(renderer.item, @color)
+    else
+      path.strokeColor = @color
 
+    @width or= 1
+    path.strokeWidth = @width
     ###
       Position the middle elements at the middle of the line;
       * first rotate them in the direction of the tangent (direction from source to target)
