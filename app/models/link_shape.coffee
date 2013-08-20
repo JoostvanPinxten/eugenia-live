@@ -60,6 +60,10 @@ class LinkShape extends Spine.Model
     renderer.item.bind "propertyUpdate", (node)=>
       #console.log(label, path, label.parent == path.parent)
       @_label.updateText(renderer.representation[@_label], renderer.item, path) 
+    renderer.item.bind "propertyUpdate", (node)=>
+      #console.log(label, path, label.parent == path.parent)
+      @refresh(renderer)
+
     group.addChild(label)
     @color or= "black"
 
