@@ -38,7 +38,7 @@ class ElementRenderer
 
   refresh: =>
     # move the element to it's new position, without re-rendering the whole bunch
-    @item.nodeShape().refresh(@)
+    @item.getShape().refresh(@)
 
   # Moves a Paper element to the back by inserting it as a toplevel child
   sendToBack: (deep = true)=>
