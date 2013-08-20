@@ -40,8 +40,8 @@
                 <button class="delete btn btn-danger btn-small" data-link="<%=link.id%>">Delete</button>
                 <button class="select btn btn-primary btn-small" data-link="<%=link.id%>">Select</button></div>
             </td>
-            <td><%=link.getShape().name%></td>
             <td> <%=link.getPropertyValue("name")%></td>
+            <td><%=link.getShape().name%></td>
             <td><%=link.paperId()%></td>
             <td><%=link.id%>
           </td>
