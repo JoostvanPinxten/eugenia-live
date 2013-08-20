@@ -75,6 +75,7 @@ class SimulationControl extends Spine.Controller
     "click button[data-stop-simulation]" : "stop"
     "click button[data-start-simulation]" : "start"
     "click button[data-reset-simulation]" : "reset"
+    "click button[data-export-trace]" : "showTrace"
 
   addBehavior: (element) ->
     if element.getShape().behavior # and link.getShape().behavior
@@ -116,6 +117,7 @@ class SimulationControl extends Spine.Controller
     #console.log(@eventMap)
 
     @expressionEvaluator = new ExpressionEvaluator
+    @simulationTrace = {}
 
     @unsub = simulationPoll.currentTime.onValue (tick) =>
       if tick is 0
@@ -132,20 +134,22 @@ class SimulationControl extends Spine.Controller
           @fireAll(event.name, event.context)
         else
           @fire(event.target, event.name, event.context)
-        #console.log('Fired '+ event.name, event.target, '(' + @events.length+' events remaining)')
-      ###for node in @item.nodes().all()
-        newSetters = node.simulate(@)
-        # gather all the triggers, built by the simulation statements
-        setters = setters.concat(newSetters)
-###
-      # fire all the setters
-      #console.group('executing setters')
+
       while setter = @setters.shift()
         if setter instanceof Function
-          #console.log('setter', setter)
           setter()
 
-      #console.groupEnd()
+      trace = {}
+      # log all the messages to the simluation trace
+      for node in @item.nodes().all()
+          data = node.log()
+          if data
+            trace[node.paperId()] = data
+      @simulationTrace[simulationPoll.displayTime()] = trace
+
+      #for link in @item.links().all()
+      #    data = 
+      #    if 
       simulationPoll.calculatingSimulation = false
 
   primeSimulation: () ->
@@ -211,6 +215,36 @@ class SimulationControl extends Spine.Controller
 
   reset: (event) =>
     simulationPoll.reset()
+
+  showTrace: (event) =>
+    ### this is a very nasty hack, which we should remove as soon as possible ###
+    
+    w = window.open('eugenia-results','','width=800,height=600')
+
+    contents = ""
+    headersWritten = false
+    console.log(@simulationTrace)
+    for time of @simulationTrace
+      nodeData = @simulationTrace[time]
+
+      unless headersWritten
+        contents += "<tr>"
+        contents += "<th>time</th>"
+        for nodeId of nodeData
+          for property in Node.find('c-'+ nodeId.split('-')[1]).getShape().observers
+            contents += "<th>" + nodeId + "#"+property+"</th>"
+        contents += "</tr>"
+        headersWritten = true
+      
+      contents += "<tr>"
+      contents += "<td>"+time+"</td>"
+      for nodeId of nodeData
+        for property in nodeData[nodeId]
+          contents += "<td>" + property + "</td>"
+      contents += "</tr>"
+
+    w.document.write("<table>" + contents + "</table>")
+    w.focus()
 
   render: =>
     simulationPoll.reset()

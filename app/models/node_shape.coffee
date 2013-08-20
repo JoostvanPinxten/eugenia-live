@@ -7,7 +7,7 @@ redrawCoordinator = require('views/drawings/redraw_coordinator')
 Elements = require('views/drawings/shapes/elements')
 
 class NodeShape extends Spine.Model
-  @configure "NodeShape", "name", "properties", "label", "elements", "behavior"
+  @configure "NodeShape", "name", "properties", "label", "elements", "behavior", "observers"
   @belongsTo 'palette', 'models/palette'
   
   constructor: (attributes) ->

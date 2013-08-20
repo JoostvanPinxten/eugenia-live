@@ -97,4 +97,13 @@ class Node extends Spine.Model
 
   ofType: (typeName)->
     @getShape().name.toLowerCase() == typeName.toLowerCase()
+
+  log: () ->
+    # report all observers in a map
+    if @getShape().observers
+      result = []
+      for property in @getShape().observers
+        result.push(@getPropertyValue(property))
+      result
+
 module.exports = Node
