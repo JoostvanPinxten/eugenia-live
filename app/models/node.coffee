@@ -95,4 +95,6 @@ class Node extends Spine.Model
   getShape: =>
     @nodeShape()
 
+  ofType: (typeName)->
+    @getShape().name.toLowerCase() == typeName.toLowerCase()
 module.exports = Node

@@ -118,5 +118,8 @@ class Link extends Spine.Model
     Node = require('models/node')
     Node.find(@targetId)
 
+  ofType: (typeName)->
+    @getShape().name.toLowerCase() == typeName.toLowerCase()
+
     
 module.exports = Link
