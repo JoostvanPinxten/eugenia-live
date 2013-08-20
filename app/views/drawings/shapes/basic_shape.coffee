@@ -3,6 +3,9 @@ redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 class BasicShape
   constructor: (@parent, @options) ->
+    ExpressionEvaluator = require('models/helper/expression_evaluator')
+    @evaluator = new ExpressionEvaluator
+
     # the current representation initializes to null
     @current = null
 
@@ -11,7 +14,7 @@ class BasicShape
 
     # TODO: only recreate if one of the element's specification depends on a full redraw AND is based on a property
     # TODO: only update the 'style' or position in case there is a relevant change (e.g. property has changed on which a def depends)
-    Bacon.fromEventTarget(node, "propertyUpdate").onValue(@create, renderer) 
+    @unsub = Bacon.fromEventTarget(node, "propertyUpdate").onValue(@create, renderer) 
     @create(renderer, node, @parent)
 
   # node argument is redundant
@@ -25,13 +28,13 @@ class BasicShape
     # but only the position and style of elements?
     throw  "updateElement method not implemented for #{@constructor.name}"
 
-    
+  unbind: () ->
+    @unsub()
+
   getOption: (content, node, defaultValue) ->
     if (typeof content is 'string' or content instanceof String) and content.length and content[0] is "$"
-      ExpressionEvaluator = require('models/helper/expression_evaluator')
-      evaluator = new ExpressionEvaluator
 
-      evaluator.evaluate(node, content)
+      @evaluator.evaluate(node, content)
     else
       content
 
