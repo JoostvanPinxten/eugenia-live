@@ -12,6 +12,14 @@ class Selection extends Spine.Controller
   constructor: ->
     super
     @item.bind("update", @render)
+    # TODO: How can we make the values of the text-fields 
+    # (which represent the properties) update together with 
+    # the actual Element that's selected? 
+    # We could perhaps use Bacon to bind to the 'update' 
+    # event that is triggered by Spine, but I don't know
+    # when to do this, and when to unsub from the 'update'
+    # events
+
     @render()
     
   render: =>
