@@ -77,8 +77,6 @@ class ExpressionEvaluator
         # special cases first
         when part.trim().toLowerCase() is 'outgoing'
           # FIXME: what about non-unique occurrences, need to have them twice?
-          # e.g. from N1--L1-->N2 and N1--L2-->N3--L3-->N2
-          # where N1.outgoing.target().outgoing.target() would include N2 twice
           source = source.map((el)->el.outgoingLinks()).reduce((a, b)-> a.concat(b))
         when part.trim().toLowerCase() is 'incoming'
           source = source.map((el)->el.incomingLinks()).reduce((a, b)-> a.concat(b))
@@ -131,7 +129,8 @@ class ExpressionEvaluator
       try
         return eval(evalable)
       catch e
-        console.error(expression, e, evalable)
+        console.error(expression, e, evalable, context)
+        throw e
     else
       number = parseFloat(evalable)
       if not isNaN(number)
