@@ -12,6 +12,7 @@ FunctionBuilder = require('controllers/helpers/function_builder')
 
 simulationPoll = require('controllers/simulation_poll')
 Node = require('models/node')
+Link = require('models/link')
 ExpressionEvaluator = require('models/helper/expression_evaluator')
 
 class Simulation extends Spine.Controller
@@ -145,6 +146,10 @@ class SimulationControl extends Spine.Controller
           data = node.log()
           if data
             trace[node.paperId()] = data
+      for link in @item.links().all()
+          data = link.log()
+          if data
+            trace[link.paperId()] = data
       @simulationTrace[simulationPoll.displayTime()] = trace
 
       #for link in @item.links().all()
@@ -219,27 +224,34 @@ class SimulationControl extends Spine.Controller
   showTrace: (event) =>
     ### this is a very nasty hack, which we should remove as soon as possible ###
     
-    w = window.open('eugenia-results','','width=800,height=600')
+    w = window.open('about:blank','','width=800,height=600')
 
     contents = ""
     headersWritten = false
-    console.log(@simulationTrace)
+    #console.log(@simulationTrace)
     for time of @simulationTrace
       nodeData = @simulationTrace[time]
 
       unless headersWritten
         contents += "<tr>"
         contents += "<th>time</th>"
-        for nodeId of nodeData
-          for property in Node.find('c-'+ nodeId.split('-')[1]).getShape().observers
-            contents += "<th>" + nodeId + "#"+property+"</th>"
+        for elementId of nodeData
+          if elementId.indexOf('node') is 0
+            element = Node.find('c-'+ elementId.split('-')[1])
+          else
+            element  = Link.find('c-'+ elementId.split('-')[1])
+
+          observers = element.getShape().observers
+          console.log(elementId, element, element.getShape(), observers)
+          for property in observers
+            contents += "<th>" + elementId + "#"+property+"</th>"
         contents += "</tr>"
         headersWritten = true
       
       contents += "<tr>"
       contents += "<td>"+time+"</td>"
-      for nodeId of nodeData
-        for property in nodeData[nodeId]
+      for elementId of nodeData
+        for property in nodeData[elementId]
           contents += "<td>" + property + "</td>"
       contents += "</tr>"
 

@@ -2,7 +2,7 @@ Spine = require('spine')
 Label = require('views/drawings/shapes/label')
 
 class LinkShape extends Spine.Model
-  @configure "LinkShape", "name", "properties", "color", "style", "label","width", "representation", "behavior"
+  @configure "LinkShape", "name", "properties", "color", "style", "label","width", "representation", "behavior", "observers"
   @belongsTo 'palette', 'models/palette'
   
   constructor: (attributes) ->
