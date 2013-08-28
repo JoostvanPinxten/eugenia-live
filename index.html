@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Eugenia-live : " />
+    <meta name="description" content="EuGENia Live : " />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Eugenia-live</title>
+    <title>EuGENia Live</title>
   </head>
 
   <body>
@@ -18,7 +18,7 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/JoostvanPinxten/eugenia-live">View on GitHub</a>
 
-          <h1 id="project_title">Eugenia-live</h1>
+          <h1 id="project_title">EuGENia Live</h1>
           <h2 id="project_tagline"></h2>
 
             <section id="downloads">
@@ -31,45 +31,22 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+        <p>EuGENia Live is a flexible graphical modeling tool, it allows you to:</p>
 
-<ol>
-<li>Install NPM (by <a href="http://nodejs.org/">installing Node.js</a>).</li>
-<li>Clone this Git repository.</li>
-<li>Install hem: <code>sudo npm install -g hem</code>
-</li>
-<li>Launch the development server: <code>hem server -d</code> or <code>./server.sh</code>
-</li>
-</ol><p>Note, if you are unable to use sudo and install the node modules (and hem) globally, skip sudo command and the -g flag in step 3 and 4.</p>
-
-<p>The server can also be started without the "-d" option, but this means that the Javascript will be minified on each request and therefore cannot be easily debugged. Another side-effect is that the minifaction of the javascript takes quite long, as several libraries are included.</p>
-
-<h1>
-<a name="development-dependencies" class="anchor" href="#development-dependencies"><span class="octicon octicon-link"></span></a>Development Dependencies</h1>
-
-<p>To be able to run the acceptance tests:</p>
-
-<ol>
-<li><code>brew update &amp;&amp; brew install phantomjs</code></li>
-<li>Install Ruby via RVM</li>
-<li>Install bundler: <code>gem install bundler</code>
-</li>
-<li>Install Ruby dependencies: <code>bundle install</code>
-</li>
-</ol><p>Run the acceptance tests with <code>bundle exec cucumber</code></p>
-
-<h1>
-<a name="deploying-to-heroku" class="anchor" href="#deploying-to-heroku"><span class="octicon octicon-link"></span></a>Deploying to Heroku</h1>
-
-<p>Ensure that Heroku knows that this is a Javascript (and not a Ruby) app: <code>heroku config:set BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-nodejs</code></p>
+<ul>
+<li>Quickly and easily define your modeling language</li>
+<li>Change your modeling languages as easily as you change your models</li>
+<li>Animate your modeling elements graphically</li>
+<li>Store your models in your browser</li>
+<li>Simulate your models with custom behavior</li>
+</ul><p>This project has been created by <a href="https://github.com/louismrose" class="user-mention">@louismrose</a> and we have worked on it together to add animation and simulation properties during the YCCSA Summer School of 2013. </p>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Eugenia-live maintained by <a href="https://github.com/JoostvanPinxten">JoostvanPinxten</a></p>
+        <p class="copyright">EuGENia Live maintained by <a href="https://github.com/JoostvanPinxten">JoostvanPinxten</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
