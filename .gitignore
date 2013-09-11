@@ -2,3 +2,7 @@
 node_modules
 /.bundle
 debug.png
+app/bower_components
+.tmp
+.sass-cache
+.grunt
