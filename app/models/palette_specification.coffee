@@ -393,7 +393,7 @@ class ConcentrationPaletteSpecification
           "name": "Produces",
           "properties": [
             "rate",
-            "expired"
+            "production"
           ],
           "color": "black",
           "style": "solid",
@@ -408,13 +408,19 @@ class ConcentrationPaletteSpecification
           "width": 1,
           "behavior": {
             "tick": [
-              "expired+=sim.step"
+              "production+=sim.step*${source().copies}*${rate};"
             ],
-            "tick[10*${expired}*${rate}*${source().copies} >= 1;]": [
-              "expired=0",
-              "target().copies+=Math.floor(10*${expired}*${source().copies}*${rate});"
+            "tick[${source().copies} > 0 && 10*(${production}) >= 1;]": [
+              "production-=Math.floor(10*(${production}))/10;",
+              "target().copies+=Math.floor(10*(${production}));"
+            ],
+            "tick[sim.time < 1;]": [
+              "production=0"
             ]
-          }
+          },
+          "observers": [
+            "production"
+          ]
         }, 
         {
           "name": "Consumes",
@@ -441,14 +447,20 @@ class ConcentrationPaletteSpecification
           "width": 1,
           "behavior": {
             "tick": [
-              "expired+=sim.step"
+              "expired+=sim.step*${source().copies}*${rate};"
             ],
-            "tick[10*${expired}*${rate}*${source().copies} >= 1;]": [
-              "expired=0",
-              "source().copies-=Math.floor(10*${expired}*${source().copies}*${rate});",
-              "target().copies+=Math.floor(10*${expired}*${source().copies}*${rate});"
+            "tick[10*${expired} >= 1;]": [
+              "expired-=Math.floor(10*${expired})/10;",
+              "source().copies-=Math.floor(10*${expired});",
+              "target().copies+=Math.floor(10*${expired});"
+            ],
+            "tick[sim.time < 1;]": [
+              "expired=0"
             ]
-          }
+          },
+          "observers": [
+            "expired"
+          ]
         }
       ]
     }'
