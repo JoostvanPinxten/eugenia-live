@@ -4,6 +4,7 @@ Drawing = require('models/drawing')
 
 Spine.SubStack = require('lib/substack')
 CanvasRenderer = require('views/drawings/canvas_renderer')
+canvasRendererManager = require('views/drawings/canvas_renderer_manager')
 Toolbox = require('controllers/toolbox')
 Selection = require('controllers/selection')
 ElementOverview = require('controllers/element_overview')
@@ -80,7 +81,7 @@ class Show extends Spine.Controller
   render: ->
     @html require('views/drawings/show')(@item)
     if @item
-      @renderer = new CanvasRenderer(drawing: @item, canvas: @$('#drawing')[0])
+      @renderer = canvasRendererManager.getInstance(drawing: @item, canvas: @$('#drawing')[0])
       @toolbox = new Toolbox(commander: @commander, item: @item, el: @$('#toolbox'))  
       #@simulation = new Simulation(commander: @commander, item: @item, el: @$('#simulation'))  
       @selection = new Selection(commander: @commander, item: @item, el: @$('#selection'))
