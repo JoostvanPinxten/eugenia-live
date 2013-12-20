@@ -3,7 +3,7 @@ Bacon = require('baconjs/dist/Bacon').Bacon
 Commander = require ('models/commands/commander')
 PaletteSpecification = require('models/palette_specification')
 Drawing = require('models/drawing')
-CanvasRenderer = require('views/drawings/canvas_renderer')
+canvasRendererManager = require('views/drawings/canvas_renderer_manager')
 #Toolbox = require('controllers/toolbox')
 Selection = require('controllers/selection')
 Spine.SubStack = require('lib/substack')
@@ -53,7 +53,7 @@ class Simulation extends Spine.Controller
     # the existence of the Toolbox?
     @html require('views/drawings/simulate')(@item)
 
-    new CanvasRenderer(drawing: @item, canvas: @$('#drawing')[0])
+    canvasRendererManager.getInstance(drawing: @item, canvas: @$('#drawing')[0])
     @simulation = new SimulationControl(drawing: @drawing, commander: @commander, item: @item, el: @$('#simulation'))
     @selection = new Selection(commander: @commander, item: @item, el: @$('#selection'), readOnly: true)
   

@@ -29,15 +29,18 @@ class ElementRenderer
   remove: =>
     @el.remove()
 
+    @unbindAll()
+
+  unbindAll: ->
     # cleanup any bindings we may have on this object
-    @item.unbind("update", @render)
-    @item.unbind("render", @render)
-    @item.unbind("destroy", @remove)
-    @item.unbind("selected", @bringToFront)
+    @item.unbind("update")
+    @item.unbind("render")
+    @item.unbind("destroy")
+    @item.unbind("selected")
     @item.getShape().unbind("update", @remove)
 
   refresh: =>
-    # move the element to it's new position, without re-rendering the whole bunch
+    # move the element to its new position, without re-rendering the whole bunch
     @item.getShape().refresh(@)
 
   # Moves a Paper element to the back by inserting it as a toplevel child

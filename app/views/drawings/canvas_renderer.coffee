@@ -5,31 +5,11 @@ redrawCoordinator = require('views/drawings/redraw_coordinator')
 
 class CanvasRenderer
   constructor: (options) ->
-    @canvas = options.canvas
-    @drawing = options.drawing
-    
-    paper.setup(@canvas)
-    @bindToChangeEvents()
-    @addAll(Node)
-    @addAll(Link)
+    @renderers = []
+    @refresh(options)
+
     redrawCoordinator.bind "rendered", @saveDrawingCache
 
-    ###
-    @grid = new paper.Group
-
-    for i in [0..50]
-      l = new paper.Path.Line( new paper.Point(i*20,0), new paper.Point(i*20, 400) )
-      l.strokeColor = 'gray';
-      @grid.addChild l
-    for j in [0..20]
-      l = new paper.Path.Line( new paper.Point(0,j*20), new paper.Point(1000, j*20) )
-      l.strokeColor = 'gray';
-
-      @grid.addChild l
-      
-    console.log 'added grid'
-    paper.project.activeLayer.insertChild(0, @grid)
-    ###
   bindToChangeEvents: =>
 
     # This is necessary to remove bindings that were already in place (by e.g. switching from editing to simulating)
@@ -42,7 +22,18 @@ class CanvasRenderer
     Link.bind("refresh", => @addAll(Link))
     Node.bind("create", @addOne)
     Link.bind "create", @addOne
-    
+  
+  refresh: (options) ->
+    @canvas = options.canvas
+    @drawing = options.drawing
+    paper.setup(@canvas)
+
+    @addAll(Node)
+    @addAll(Link)
+
+    @bindToChangeEvents()
+
+
   addAll: (type) =>
     associationMethod = type.className.toLowerCase() + 's' #e.g. Node -> nodes
     elements = @drawing[associationMethod]().all()         #e.g. @drawing.nodes().all()
@@ -52,10 +43,18 @@ class CanvasRenderer
   
   addOne: (element) =>
     # Set-up a renderer, then trigger 'updates' and 'destroys' on the item
-    renderer = require("views/drawings/#{element.constructor.className.toLowerCase()}_renderer")
+    elementType = element.constructor.className.toLowerCase()
+    Renderer = require("views/drawings/#{elementType}_renderer")
     
-    if (renderer)
-      new renderer(element)
+    rendererId = "#{elementType};#{element.id}"
+    if (Renderer)
+      # reuse the renderer, in case it was already defined
+      if rendererId of @renderers
+        renderer = @renderers[rendererId]
+        renderer.unbindAll()
+      renderer = new Renderer(element)
+      @renderers[rendererId] = renderer
+
     else
       console.warn("no renderer attached for " + element)
     @renderOne(element)
