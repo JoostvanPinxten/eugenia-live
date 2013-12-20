@@ -156,13 +156,13 @@ class Create extends Define
     "Create"
   
   node: =>
-    new NodeShape(name: "TheNode", elements: [{}], palette_id: @palette.id)
+    new NodeShape(name: "TheNode", elements: [{figure:'rectangle',size:{width:100, height:20}}], palette_id: @palette.id)
     
   link: =>
-    new LinkShape(name: "TheLink", palette_id: @palette.id)
+    new LinkShape(name: "TheLink", palette_id: @palette.id, color: "black")
 
 
-class Update extends Define      
+class Update extends Define
   verb: =>
     "Update"
   
