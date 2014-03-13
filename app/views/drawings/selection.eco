@@ -19,9 +19,19 @@
       <% end %>
     </tbody>
   </table>
+  <p><%=@selection.position%></p>
   <% else: %>
     <p>There are no properties to display for the selected element(s). Please select a single element to show its properties.</p>
   <% end %> 
+  <% if @selection.constructor.className is "Node": %>
+    incoming: <%=@selection.incomingLinks().length%><br/>
+    outgoing: <%=@selection.outgoingLinks().length%><br/>
+    total:  <%=@selection.links().length%><br/>
+  <% else if @selection.constructor.className is "Link": %>
+    from: <%=@selection.source().getShape().displayName()%><br/>
+    to: <%=@selection.target().getShape().displayName()%><br/>
+  <% end %>
+
 <% else: %>
   <p>Please select a single element to show its properties.</p>
 <% end %>
