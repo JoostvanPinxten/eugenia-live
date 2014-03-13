@@ -138,7 +138,10 @@ class SimulationControl extends Spine.Controller
 
       while setter = @setters.shift()
         if setter instanceof Function
-          setter()
+          try
+            setter()
+          catch e
+            console.error(e)
 
       trace = {}
       # log all the messages to the simluation trace
