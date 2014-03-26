@@ -17,6 +17,7 @@ class Index extends Spine.Controller
   events:
     'submit form': 'create'
     'click .delete': 'delete'
+    'click a#import' : 'import'
 
   constructor: ->
     super
@@ -56,6 +57,16 @@ class Index extends Spine.Controller
     for key in form.serializeArray()
       result[key.name] = key.value
     result
+
+  import: (event) =>
+    event.preventDefault()
+    serialised_data = prompt("Specify JSON data that should be imported. Note: clicking Ok will overwrite all of your existing diagrams!", "")
+    if serialised_data
+      data = JSON.parse(serialised_data)
+      for type,instances of data
+        localStorage[type] = instances
+      location.reload(true) # refresh the page
+      
 
 class Show extends Spine.Controller
   events:
