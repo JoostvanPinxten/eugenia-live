@@ -14,6 +14,9 @@
       	<a class="btn btn-medium" target="_blank" href="https://speakerdeck.com/louismrose/eugenia-live-a-flexible-graphical-modelling-tool">Presentation &raquo;</a>
       	<a class="btn btn-medium" target="_blank" href="https://github.com/louismrose/eugenia-live/"  >Source &raquo;</a>
       </p>
+      <p>
+        <a id="import" class="btn btn-primary">Import diagrams...</a>
+      </p>
     </div>
     <div class="span5 offset1" style="padding-top: 1em;">
       <div id="showcase" class="carousel slide">
